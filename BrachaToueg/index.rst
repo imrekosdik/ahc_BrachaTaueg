@@ -3,18 +3,18 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. include:: docs/BrachaTauegAlg/substitutions.rst
+.. include:: docs/BrachaTouegAlg/substitutions.rst
 
-|BrachaTauegAlg|
+|BrachaTouegAlg|
 =======================================================================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents
 
-   docs/BrachaTauegAlg/BrachaTauegAlg
+   docs/BrachaTouegAlg/BrachaTouegAlg
    docs/rubric
-   docs/BrachaTauegAlg/code
+   docs/BrachaTouegAlg/code
 
 .. ATTENTION::
    For RST details, please refer to `reStructuredText Documentation <https://docutils.sourceforge.io/rst.html>`_.
