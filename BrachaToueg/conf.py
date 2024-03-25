@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Distributed Algorithm on AHCv2: BrachaTauegAlg'
+project = 'Distributed Algorithm on AHCv2: Bracha-Toueg Deadlock Detection Algorithm'
 copyright = '2024, İmre Kosdik'
 author = 'İmre Kosdik'
 release = 'V1.0.0'
@@ -26,8 +26,9 @@ extensions = [
     'sphinx_autodoc_typehints', # Automatically document param types (less noise in class signature)
     "sphinx.ext.napoleon",
     'sphinx.ext.autosummary',  # Create neat summary tables for modules/classes/methods etc
-    "sphinx_autodoc_typehints", 
-]   
+    "sphinx_autodoc_typehints",
+    "sphinx.ext.autosectionlabel",
+]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 autodoc_member_order = "bysource"

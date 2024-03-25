@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Distributed Algorithm on AHCv2: BrachaTauegAlg'
+project = 'Distributed Algorithm on AHCv2: Shavit-Francez Distributed Termination Detection Algorithm'
 copyright = '2024, İmre Kosdik'
 author = 'İmre Kosdik'
 release = 'V1.0.0'
