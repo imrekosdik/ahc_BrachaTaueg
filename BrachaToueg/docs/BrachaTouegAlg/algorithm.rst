@@ -22,8 +22,8 @@ Distributed Algorithm: |BrachaTouegAlg|
 
 The Bracha-Toueg Deadlock Detection:ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`[Bracha1987]_, proposed by Gabriel Bracha and Sam Toueg, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
 
-1. **OUTv**: The set of nodes u for which v's request has not been granted or relinquished. ...
-2. **INv**: The set of nodes requesting a service from v, according to v’s point of view. The node v received requests from a set of nodes, but v has not yet granted or dismissed the requests. ...
+1. **OUT<sub>v</sub>**: The set of nodes *u* for which *v*'s request has not been granted or relinquished. 
+2. **IN<sub>v</sub>**: The set of nodes requesting a service from *v*, according to *v*’s point of view. The node *v* received requests from a set of nodes, but *v* has not yet granted or dismissed the requests. 
 
 After computing each set of nodes, the algorithm consists of two phases. *Notify* - where processes are notified that the algorithm started execution - and *Grant* in which active processes simulate the granting of requests. The *initiator* node starts by sending a notify message to all its outgoing edges and then executes *Grant*. Other non-initiator nodes that receive the notify message from the initiator execute *Notify*. Once the nodes become unblocked, they also grant the pending requests by executing *Grant*. The *Grant* phase is nested inside the *Notify* phase. Therefore, *Notify* terminates only after *Grant* terminates. It terminates when *Notify* terminates. At termination, the *initiator* is not deadlocked if and only if its *free* value is true. 
 
@@ -31,7 +31,7 @@ After computing each set of nodes, the algorithm consists of two phases. *Notify
 
 .. code-block:: RST
     :linenos:
-    :caption: Bracha-Toueg Deadlock Detection Algorithm [Bracha1987]_.
+    :caption: Bracha-Toueg Deadlock Detection Algorithm [Fokking2013]_.
     
     Procedure Notify
     notified <- true
