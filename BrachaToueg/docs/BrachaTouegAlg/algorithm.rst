@@ -77,14 +77,14 @@ Example
 
 Assume a system with three processes, A, B and C. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<A>* = *requests<B>* = *requests<C>* = 1 
 The walkthrough of Bracha-Toueg:ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`[Bracha1987]_ is as follows:
-1. The initiator A, sets *notified<A>* to true and sends <**notify**> to B. A awaits <**done**> from B. (See Figure 1)
-2. B receives <**notify**> from A and sets *notified<B>* to true. In order to send <**done**> to A, B sends <**nofity**> to C and awaits <**done**> from C. (See Figure 1)
-3. C receives <**notify**> from B and sets *notified<C>* to true. In order to send <**done**> to B, C sends <**nofity**> to A and awaits <**done**> from A. (See Figure 1)
-4. Since *notified<A>* is true, A does not send any <**notify**> messages. It directly sends <**done**> to C. (See Figure 2)
-5. C sends <**done**> to B because C is already notified. (See Figure 2)
-6. B sends <**done**> to A because B is already notified. (See Figure 2)
-7. Once A receives <**done**> from all its OUT, consisting of B, it checks the *free<A>*, and since *free<A>* is false, it concludes that the resources are never granted and it is deadlocked. 
- 
+1. The initiator A, sets *notified<A>* to true and sends <**notify**> to B. A awaits <**done**> from B. (See Figure 1)  
+2. B receives <**notify**> from A and sets *notified<B>* to true. In order to send <**done**> to A, B sends <**nofity**> to C and awaits <**done**> from C. (See Figure 1)  
+3. C receives <**notify**> from B and sets *notified<C>* to true. In order to send <**done**> to B, C sends <**nofity**> to A and awaits <**done**> from A. (See Figure 1)  
+4. Since *notified<A>* is true, A does not send any <**notify**> messages. It directly sends <**done**> to C. (See Figure 2)  
+5. C sends <**done**> to B because C is already notified. (See Figure 2)  
+6. B sends <**done**> to A because B is already notified. (See Figure 2)  
+7. Once A receives <**done**> from all its OUT, consisting of B, it checks the *free<A>*, and since *free<A>* is false, it concludes that the resources are never granted and it is deadlocked.  
+  
  
 Correctness
 ~~~~~~~~~~~
