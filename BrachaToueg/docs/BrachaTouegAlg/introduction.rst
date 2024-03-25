@@ -12,9 +12,7 @@ Deadlock detection is a challenging problem due to various reasons. Because dead
 
 Several deadlock detection algorithms for distributed systems were proposed other than the Bracha-Toueg algorithm. Some of those algorithms were proven incorrect, and proof of the others was too complex. The complexity of these algorithms comes from the nature of the distributed systems. What makes the Bracha-Taueg special is that its time and space complexity is lower than the best previously known deadlock detection algorithm. It also overcomes the challenges of the dynamic system environment by taking a snapshot of the system and then running the algorithm on that snapshot. This approach does not affect the system throughput since the cycle detection process can proceed concurrently with other system activities. 
 
-The Bracha-Toueg algorithm is a global state-based deadlock detection algorithm, assuming that a consistent global state is determinable without suspending or halting the system. One notable aspect of this algorithm is its ability to provide each process with knowledge of whether or not it is in a deadlocked state, as it always terminates. However, there have been some objections to the correctness of the algorithm, highlighting the challenge of understanding and proving an algorithm written with global side effects.
+The Bracha-Toueg algorithm is a global state-based deadlock detection algorithm, assuming that a consistent global state is determinable without suspending or halting the system. One notable aspect of this algorithm is its ability to provide each process with knowledge of whether or not it is in a deadlocked state, as it always terminates. 
 
 Our primary contributions consist of the following: // TBD 
-    - Implementation of both the Chandy-Lamport Algorithm and the Lai-Yang Algorithm on the AHCv2 platform. The implementation specifics are detailed in Section XX.
-    - Examination of the performance of these algorithms across diverse topologies and usage scenarios. Results from these investigations are outlined in Section XXX.
-    - Comprehensive comparison and contrast of the algorithms based on criteria such as accuracy, overhead, complexity, and fault tolerance. Key insights derived from these comparisons are elaborated upon in Section XXXX.
+   

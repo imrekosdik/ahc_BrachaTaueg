@@ -1,2 +1,2 @@
-.. |BrachaTouegAlg| replace:: Distributed Algorithm Name 
+.. |BrachaTouegAlg| replace:: Bracha-Toueg Deadlock Detection Algorithm
 
