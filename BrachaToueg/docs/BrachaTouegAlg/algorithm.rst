@@ -20,30 +20,48 @@ Deadlock detection is a fundamental problem in distributed computing, which requ
 Distributed Algorithm: |BrachaTouegAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-An example distributed algorithm for broadcasting on an undirected graph is presented in  :ref:`Algorithm <BlindFloodingAlgorithmLabel>`.
+The Bracha-Toueg Deadlock Detection:ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`[Bracha1987]_, proposed by Gabriel Bracha and Sam Toueg, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
 
-.. _BlindFloodingAlgorithmLabel:
+OUTv: The set of nodes u for which v's request has not been granted or relinquished.
+INv: The set of nodes requesting a service from v, according to v’s point of view. The node v received requests from a set of nodes, but v has not yet granted or dismissed the requests. 
+
+After computing each set of nodes, the algorithm consists of two phases. Notify - where processes are notified that the algorithm started execution - and Grant in which active processes simulate the granting of requests. The initiator node starts by sending a notify message to all its outgoing edges and then executes Grant. Other non-initiator nodes that receive the notify message from the initiator execute Notify. Once the nodes become unblocked, they also grant the pending requests by executing Grant. The Grant phase is nested inside the Notify phase. Therefore, Notify terminates only after Grant terminates. It terminates when Notify terminates. At termination, the initiator is not deadlocked if and only if its free value is true. 
+
+.. _BrachaTouegDeadlockDetectionAlgorithm:
 
 .. code-block:: RST
     :linenos:
-    :caption: Blind flooding algorithm.
+    :caption: Bracha-Toueg Deadlock Detection Algorithm [Bracha1987]_.
     
+    Procedure Notify
+    notified <- true
+    send<notify> to all w ∈  OUT
+    if requests = 0 then
+		perform Procedure Grant
+	end if
+    await<done> from all w ∈ OUT
 
-    Implements: BlindFlooding Instance: cf
-    Uses: LinkLayerBroadcast Instance: lbc
-    Events: Init, MessageFromTop, MessageFromBottom
-    Needs:
+    Upon receipt by v of Notify from a neighbor w:
+    If notified = false then
+		Perform Procedure Notify
+    end if
+    send<done> to w
 
-    OnInit: () do
-    
-    OnMessageFromBottom: ( m ) do
-        Trigger lbc.Broadcast ( m )
-    
-    OnMessageFromTop: ( m ) do
-        Trigger lbc.Broadcast ( m )
+    Procedure Grant
+    free <- true
+    send<grant> to all w ∈ IN
+    await<ack> from all w ∈ IN
+
+    Upon receipt by v of Grant from a neighbor w:
+    If requests > 0 then
+		Requests <- requestv – 1
+        if requests = 0 then
+			Perform procedure Grant
+		end if
+    end if
+    send<ack> to w
 
 
-Do not forget to explain the algorithm line by line in the text.
 
 Example
 ~~~~~~~~
