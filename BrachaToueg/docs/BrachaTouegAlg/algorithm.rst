@@ -64,13 +64,14 @@ After computing each set of nodes, the algorithm consists of two phases. *Notify
 
 Example
 ~~~~~~~~
-.. image:: figures/bracha_example_step1.jpg
-  :width: 400
-  :alt: Figure 1
 
-.. image:: figures/bracha_example_step2.jpeg
-  :width: 400
-  :alt: Figure 2
+|pic1| Example |pic2|
+
+.. |pic1| image:: figures/bracha_example_step1.jpg
+   :width: 45%
+
+.. |pic2| image:: figures/bracha_example_step2.jpeg
+   :width: 45%
 
 Assume a system with three processes, A, B and C. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<A>* = *requests<B>* = *requests<C>* = 1 
 The walkthrough of Bracha-Toueg:ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`[Bracha1987]_ is as follows:
