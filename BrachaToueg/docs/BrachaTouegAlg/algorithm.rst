@@ -14,13 +14,13 @@ Wait-for-graphs model the resource dependencies in distributed systems. [Kshemka
 
 An active node in a WFG can send an N-out-of-M request. After sending the request, the node becomes blocked until at least N of the requests are granted. Once the node becomes blocked, it cannot send any more requests. Directed edges are included in the graph to indicate the requests, and they go from the node to each node containing the required resources. As nodes grant the resources to the blocked node, the system removes the directed edges correspondingly. Once N requests are approved, the node becomes active again and sends notifications to M-N nodes to dismiss the remaining requests. After that, the system removes the remaining directed edges accordingly. [Bracha1987]_ [Fokking2013]_
 
-Deadlock detection is a fundamental problem in distributed computing, which requires examining the system’s WFG for cyclic dependencies. For this purpose, the processes in the system periodically check whether the system contains any deadlock by taking a snapshot of the global state of the system. According to Knapp’s deadlock detection algorithm classification, this approach falls under the global state-based algorithms. The Bracha-Toueg deadlock detection algorithm is also one of them. Next, we will discuss the implementation details, the correctness, and the complexity analysis of the Bracha-Toueg algorithm. 
+Deadlock detection is a fundamental problem in distributed computing, which requires examining the system’s WFG for cyclic dependencies. For this purpose, the processes in the system periodically check whether the system contains any deadlock by taking a snapshot of the global state of the system.  According to Knapp’s deadlock detection algorithm classification [Knapp1987]_, this approach falls under the global state-based algorithms. These algorithms including the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is based on Chandy-Lamport Snapshot Algorithm [Chandy1985]_. Next, we will discuss the implementation details, the correctness, and the complexity analysis of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`. 
 
 
 Bracha-Toueg Deadlock Detection Algorithm: |BrachaTouegAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Bracha-Toueg Deadlock Detection :ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, proposed by Gabriel Bracha and Sam Toueg [Bracha1987]_, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
+The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, proposed by Gabriel Bracha and Sam Toueg [Bracha1987]_, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
 
 1. **OUTv**: The set of nodes *u* for which *v*'s request has not been granted or relinquished. 
 2. **INv**: The set of nodes requesting a service from *v*, according to *v*’s point of view. The node *v* received requests from a set of nodes, but *v* has not yet granted or dismissed the requests. 
@@ -76,7 +76,7 @@ Example
            Fig 2. Step 2
 
 Assume a system with three processes, A, B and C. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<A>* = *requests<B>* = *requests<C>* = 1 
-The walkthrough of Bracha-Toueg :ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
+The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
 
 1. The initiator A, sets *notified<A>* to true and sends <**notify**> to B. A awaits <**done**> from B. (See Figure 1) 
 2. B receives <**notify**> from A and sets *notified<B>* to true. In order to send <**done**> to A, B sends <**nofity**> to C and awaits <**done**> from C. (See Figure 1) 
@@ -93,12 +93,13 @@ Correctness
  
 Complexity 
 ~~~~~~~~~~
-1. **Time Complexity:** The Bracha-Toueg :ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` has time complexity of 4 * d hops, where d is the diameter of a given WFG. [Kshemkalyani1994]_
-2. **Message Complexity:** The Bracha-Toueg :ref:`Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` has message complexity of 4 * e messages, where e is the number of the edges in a given WFG. [Kshemkalyani1994]_
+1. **Time Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has time complexity of 4 * d hops, where d is the diameter of a given WFG. [Kshemkalyani1994]_
+2. **Message Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has message complexity of 4 * e messages, where e is the number of the edges in a given WFG. [Kshemkalyani1994]_
 
 
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
 .. [Bracha1987] G. Bracha and S. Toeug, "Distributed Deadlock detection". Distributed Comput., vol. 2, pp. 127-138, 1987.
 .. [Kshemkalyani2008] Ajay D. Kshemkalyani, Mukesh Singhal, Distributed Computing: Principles, Algorithms and Systems, Cambridge Univeristy Press, New York, USA, 2008 
 .. [Kshemkalyani1994] A. D. Kshemkalyani and M. Singhal, "Efficient detection and resolution of generalized distributed deadlocks," in IEEE Transactions on Software Engineering, vol. 20, no. 1, pp. 43-54, Jan. 1994,
-
+.. [Knapp1987] E. Knapp, "Deadlock Detection in Distributed Databases", ACM Computing Surveys, Volume 19, Issue 4, pp 303-328, 1987
+.. [Chandy1985] Chandy, K. M., and Lamport, L. 1985. Distributed snapshots: Determining global states of distributed systems. ACM Trans. Program. Lang. Syst. 3, 1 (Feb.), 63-75.
