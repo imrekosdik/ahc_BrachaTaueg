@@ -13,5 +13,5 @@ The challenge in detecting termination lies in distributed computing. Previous a
 
 The Shavit-Francez algorithm is an effective way to detect termination without interfering with the overall execution of the distributed system. The algorithm doesn't rely on synchronous communication, simplifying the design and implementation of the system. In contrast to the increasing number of nodes, the message-sharing overhead from the algorithm remains low, which means it has less impact on the system's performance. In summary, the Shavit-Francez algorithm is a foundational method for detecting termination in distributed computing.
 
-Our primary contributions consist of the following: //TBD
+Our primary contributions consist of the following: 
 
