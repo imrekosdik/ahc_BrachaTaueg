@@ -9,19 +9,22 @@ Background and Related Work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Global termination in a distributed system occurs when all the processes are in the local termination state and processes do not send or receive any messages. Local termination means a process completes its execution and starts computation again upon receiving any message. Processes under this condition are passive (idle) and become active upon receiving any message. Only the active processes can perform the send event. Therefore, a distributed system terminates when its processes are idle. Note that the act of sending the message and receipt of it is atomic. 
 
-The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. [Fokking2013]_Typically, the control algorithm has two phases: termination detection and the announcement "*Announce*" phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes. 
+The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. [Fokking2013]_ Typically, the control algorithm has two phases: termination detection and the announcement "*Announce*" phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes. 
 
-Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> [Shavit1986] is the generalization of Dijkstra-Scholten [Dijkstra1980] Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm.[Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
+:ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` [Shavit1986]_ is the generalization of Dijkstra-Scholten [Dijkstra1980]_ Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm. [Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
 
 Distributed Algorithm: |ShavitFranchezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 F = (V, E) is the computation graph of the algorithm, where
+
 	1. **F** is a forest of which each tree is rooted in an initiator
 	2. **V** includes all active processes and the basic messages.
 
 The algorithm terminates when the computation graph becomes empty. Since the algorithm maintains a forest of trees, each initiator is only aware of the emptiness of their own tree. Hovewer, this does not mean that the forest is empty. A single wave verifies that all of the trees have collapsed. A computation of a wave algorithm is a wave. The forest is  managed in a way where a tree, Tp, that becomes empty will remain empty permanently. It's important to note that this doesn't stop the initiator, p, from becoming active again. However, if p does become active again after its tree has collapsed, it will be placed into another initiator's tree. The wave is started by one of the initiators and the wave is tagged with the initator's ID. Only the processes whose tree has collapsed participate to the wave, and when the wave makes a decision, Announce is called. 
 
 Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that satisfies the following three requirements:
+
 	1. Termination: Each computation is finite.
 	2. Decision: Each computation contains at least one decide event.
 	3. Dependence: In each computation each decide event is causally preceded by an event in each process.
@@ -31,7 +34,7 @@ Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that sati
 
 .. code-block:: RST
     :linenos:
-    :caption: Shavit-Francez Termination Detection Algorithm.
+    :caption: Shavit-Francez Termination Detection Algorithm
     
     bool active<p> // set when p becomes active, and reset when p becomes passive
     nat cc<p> // keeps track of the number of children of p in its tree
@@ -110,6 +113,7 @@ Example
            Fig 2. Step 6
 
 Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is as follows:
+
 1. At the start, the initiators p and q both send a basic message to r, and set cc<p> and cc<q> to 1. Next, p and q become passive.(See Figure 1)
 2. Upon receipt of the basic message from p, r becomes active and makes p its parent. Next, r receives the basic message from q, and sends back an acknowledgment, which causes q to decrease cc<q> to 0.(See Figure 2)
 3. Since q became passive as the root of a tree, and cc<q> = 0, it starts a wave. This wave does not complete, because p and r refuse to participate.(See Figure 3)
@@ -120,13 +124,14 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 
 Correctness
 ~~~~~~~~~~~
-1. **Safety**: The *Announce* is called when a decision occurs in the wave algorithm. This implies that each process p has sent a wave message or has decided, and the algorithm implies that empty_p was true when p did so. No action makes empty_p false again, so (for each p) empty_p is true when *Announce* is called.[Tel2001]_
-2. **Liveness**: Assume that the basic computation has terminated. Within a finite number of steps the termination-detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration F is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to *Announce*.[Tel2001]_
+
+1. **Safety**: The *Announce* is called when a decision occurs in the wave algorithm. This implies that each process p has sent a wave message or has decided, and the algorithm implies that empty<p> was true when p did so. No action makes empty<p> false again, so (for each p) empty<p> is true when *Announce* is called. [Tel2001]_
+2. **Liveness**: Assume that the basic computation has terminated. Within a finite number of steps the termination-detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration F is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to *Announce*. [Tel2001]_
 3. **Correctness**: Define S to be the sum of all sun-counts. Initially S is zero, S is incremented when a basic message is sent, S is decremented when a control message is received, and S is never negative.This implies that the number of control messages never exceeds the number of basic messages in any computation.[Tel2001]_
 
 Complexity 
 ~~~~~~~~~~
-The worst case message complexity of the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm. The algorithm is a worst-case optimal algorithm for termination detection of decentralized computations (if an optimal wave algorithm is supplied).[Tel2001]_ 
+The worst case message complexity of the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm. The algorithm is a worst-case optimal algorithm for termination detection of decentralized computations (if an optimal wave algorithm is supplied). [Tel2001]_ 
 
 .. [Shavit1986] Shavit, N. and Francez, N. A new approach to the detection of locally indicative stability. In proc. Int. Colloq. Automata, Languages, and Programming (1986), L. Kott (ed.), vol. 226 of Lecture Notes in Computer Science, Springer-Verlag, pp. 344-358.
 .. [Kshemkalyani2008] Ajay D. Kshemkalyani, Mukesh Singhal, Distributed Computing: Principles, Algorithms and Systems, Cambridge Univeristy Press, New York, USA, 2008 
