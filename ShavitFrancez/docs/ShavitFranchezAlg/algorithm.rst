@@ -11,7 +11,7 @@ Global termination in a distributed system occurs when all the processes are in 
 
 The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. [Fokking2013]_ Typically, the control algorithm has two phases: termination detection and the announcement "*Announce*" phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes. 
 
-:ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` [Shavit1986]_ is the generalization of Dijkstra-Scholten [Dijkstra1980]_ Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm. [Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
+:ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` [Shavit1986]_ is the generalization of Dijkstra-Scholten [Dijkstra1980]_ Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm. [Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
 
 Distributed Algorithm: |ShavitFranchezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,9 +25,9 @@ The algorithm terminates when the computation graph becomes empty. Since the alg
 
 Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that satisfies the following three requirements:
 
-	1. Termination: Each computation is finite.
-	2. Decision: Each computation contains at least one decide event.
-	3. Dependence: In each computation each decide event is causally preceded by an event in each process.
+	1. **Termination:** Each computation is finite.
+	2. **Decision:** Each computation contains at least one decide event.
+	3. **Dependence:** In each computation each decide event is causally preceded by an event in each process.
 
 
 .. _ShavitFranchesTerminationDetectionAlgorithm:
