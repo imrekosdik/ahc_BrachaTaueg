@@ -1,6 +1,6 @@
 .. include:: substitutions.rst
 
-|ShavitFranchezAlg|
+|ShavitFrancezAlg|
 =========================================
 
 
@@ -13,7 +13,7 @@ The primary consideration behind the termination detection algorithms is adding 
 
 :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` [Shavit1986]_ is the generalization of Dijkstra-Scholten [Dijkstra1980]_ Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm. [Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
 
-Distributed Algorithm: |ShavitFranchezAlg| 
+Distributed Algorithm: |ShavitFrancezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 F = (V, E) is the computation graph of the algorithm, where
