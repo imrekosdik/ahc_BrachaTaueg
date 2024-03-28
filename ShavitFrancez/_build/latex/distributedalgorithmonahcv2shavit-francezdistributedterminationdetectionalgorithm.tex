@@ -134,15 +134,17 @@ Our primary contributions consist of the following:
 Global termination in a distributed system occurs when all the processes are in the local termination state and processes do not send or receive any messages. Local termination means a process completes its execution and starts computation again upon receiving any message. Processes under this condition are passive (idle) and become active upon receiving any message. Only the active processes can perform the send event. Therefore, a distributed system terminates when its processes are idle. Note that the act of sending the message and receipt of it is atomic.
 
 \sphinxAtStartPar
-The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. {[}Fokking2013{]}\_Typically, the control algorithm has two phases: termination detection and the announcement “\sphinxstyleemphasis{Announce}” phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes.
+The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. \sphinxcite{docs/ShavitFranchezAlg/algorithm:fokking2013} Typically, the control algorithm has two phases: termination detection and the announcement “\sphinxstyleemphasis{Announce}” phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes.
 
 \sphinxAtStartPar
-Shavit\sphinxhyphen{}Francez Algorithm \textless{}ShavitFranchesTerminationDetectionAlgorithm\textgreater{} {[}Shavit1986{]} is the generalization of Dijkstra\sphinxhyphen{}Scholten {[}Dijkstra1980{]} Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra\sphinxhyphen{}Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit\sphinxhyphen{}Francez Algorithm \textless{}ShavitFranchesTerminationDetectionAlgorithm\textgreater{} maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non\sphinxhyphen{}initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm.{[}Tel2001{]}\_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
+{\hyperref[\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}]{\sphinxcrossref{\DUrole{std,std-ref}{Shavit\sphinxhyphen{}Francez Algorithm}}}} \sphinxcite{docs/ShavitFranchezAlg/algorithm:shavit1986} is the generalization of Dijkstra\sphinxhyphen{}Scholten \sphinxcite{docs/ShavitFranchezAlg/algorithm:dijkstra1980} Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra\sphinxhyphen{}Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit\sphinxhyphen{}Francez Algorithm \textless{}ShavitFranchesTerminationDetectionAlgorithm\textgreater{} maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non\sphinxhyphen{}initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm. \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
 
 
 \subsection{Distributed Algorithm: Distributed Algorithm Name}
-\label{\detokenize{docs/ShavitFranchezAlg/algorithm:distributed-algorithm-shavitfranchezalg}}\begin{description}
-\sphinxlineitem{F = (V, E) is the computation graph of the algorithm, where}\begin{enumerate}
+\label{\detokenize{docs/ShavitFranchezAlg/algorithm:distributed-algorithm-shavitfranchezalg}}
+\sphinxAtStartPar
+F = (V, E) is the computation graph of the algorithm, where
+\begin{enumerate}
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
@@ -154,12 +156,12 @@ Shavit\sphinxhyphen{}Francez Algorithm \textless{}ShavitFranchesTerminationDetec
 
 \end{enumerate}
 
-\end{description}
-
 \sphinxAtStartPar
 The algorithm terminates when the computation graph becomes empty. Since the algorithm maintains a forest of trees, each initiator is only aware of the emptiness of their own tree. Hovewer, this does not mean that the forest is empty. A single wave verifies that all of the trees have collapsed. A computation of a wave algorithm is a wave. The forest is  managed in a way where a tree, Tp, that becomes empty will remain empty permanently. It’s important to note that this doesn’t stop the initiator, p, from becoming active again. However, if p does become active again after its tree has collapsed, it will be placed into another initiator’s tree. The wave is started by one of the initiators and the wave is tagged with the initator’s ID. Only the processes whose tree has collapsed participate to the wave, and when the wave makes a decision, Announce is called.
-\begin{description}
-\sphinxlineitem{Wave Algorithm \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}: A wave algorithm is a distributed algorithm that satisfies the following three requirements:}\begin{enumerate}
+
+\sphinxAtStartPar
+Wave Algorithm \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}: A wave algorithm is a distributed algorithm that satisfies the following three requirements:
+\begin{enumerate}
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
@@ -174,10 +176,8 @@ Decision: Each computation contains at least one decide event.
 Dependence: In each computation each decide event is causally preceded by an event in each process.
 
 \end{enumerate}
-
-\end{description}
-\sphinxSetupCaptionForVerbatim{Shavit\sphinxhyphen{}Francez Termination Detection Algorithm.}
-\def\sphinxLiteralBlockLabel{\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id2}}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}}}
+\sphinxSetupCaptionForVerbatim{Shavit\sphinxhyphen{}Francez Termination Detection Algorithm}
+\def\sphinxLiteralBlockLabel{\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id9}}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}}}
 \begin{sphinxVerbatim}[commandchars=\\\{\},numbers=left,firstnumber=1,stepnumber=1]
 bool active\PYGZlt{}p\PYGZgt{} // set when p becomes active, and reset when p becomes passive
 nat cc\PYGZlt{}p\PYGZgt{} // keeps track of the number of children of p in its tree
@@ -240,34 +240,34 @@ If p receives a wave message then
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=321\sphinxpxdimen,height=225\sphinxpxdimen]{{step1}.jpg}
-\sphinxfigcaption{Fig 1. Step 1}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id3}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 1. Step 1}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id10}}\end{sphinxfigure-in-table}\relax
 &\begin{sphinxfigure-in-table}
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=325\sphinxpxdimen,height=193\sphinxpxdimen]{{step2}.jpg}
-\sphinxfigcaption{Fig 2. Step 2}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id4}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 2. Step 2}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id11}}\end{sphinxfigure-in-table}\relax
 \\
 \sphinxhline\begin{sphinxfigure-in-table}
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=325\sphinxpxdimen,height=193\sphinxpxdimen]{{step3}.jpg}
-\sphinxfigcaption{Fig 3. Step 3}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id5}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 3. Step 3}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id12}}\end{sphinxfigure-in-table}\relax
 &\begin{sphinxfigure-in-table}
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=327\sphinxpxdimen,height=204\sphinxpxdimen]{{step4}.jpg}
-\sphinxfigcaption{Fig 2. Step 4}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id6}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 2. Step 4}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id13}}\end{sphinxfigure-in-table}\relax
 \\
 \sphinxhline\begin{sphinxfigure-in-table}
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=328\sphinxpxdimen,height=204\sphinxpxdimen]{{step5}.jpg}
-\sphinxfigcaption{Fig 2. Step 5}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id7}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 2. Step 5}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id14}}\end{sphinxfigure-in-table}\relax
 &\begin{sphinxfigure-in-table}
 \centering
 \capstart
 \noindent\sphinxincludegraphics[width=339\sphinxpxdimen,height=208\sphinxpxdimen]{{step6}.jpg}
-\sphinxfigcaption{Fig 2. Step 6}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id8}}\end{sphinxfigure-in-table}\relax
+\sphinxfigcaption{Fig 2. Step 6}\label{\detokenize{docs/ShavitFranchezAlg/algorithm:id15}}\end{sphinxfigure-in-table}\relax
 \\
 \sphinxbottomrule
 \end{tabulary}
@@ -276,12 +276,33 @@ If p receives a wave message then
 
 \sphinxAtStartPar
 Assume that there are three processes p, q, r in an undirected network. One way to execute the {\hyperref[\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}]{\sphinxcrossref{\DUrole{std,std-ref}{Shavit\sphinxhyphen{}Francez Algorithm}}}} is as follows:
-1. At the start, the initiators p and q both send a basic message to r, and set cc\textless{}p\textgreater{} and cc\textless{}q\textgreater{} to 1. Next, p and q become passive.(See Figure 1)
-2. Upon receipt of the basic message from p, r becomes active and makes p its parent. Next, r receives the basic message from q, and sends back an acknowledgment, which causes q to decrease cc\textless{}q\textgreater{} to 0.(See Figure 2)
-3. Since q became passive as the root of a tree, and cc\textless{}q\textgreater{} = 0, it starts a wave. This wave does not complete, because p and r refuse to participate.(See Figure 3)
-4. r sends a basic message to q, and sets cc\textless{}r\textgreater{} to 1. Next, r becomes passive.(See Figure 4)
-5. Upon receipt of the basic message from r, q becomes active, and makes r its parent. Next, q becomes passive, and sends an acknowledgment to its parent r, which causes r to decrease cc\textless{}r\textgreater{} to 0. Since r is passive and cc\textless{}r\textgreater{} = 0, it sends an acknowledgment to its parent p, which causes p to decrease cc\textless{}p\textgreater{} to 0.(See Figure 5)
-6. Since p became passive as the root of a tree, and cc\textless{}p\textgreater{} = 0, it starts a wave. This wave completes, so that p calls Announce.(See Figure 6)
+\begin{enumerate}
+\sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
+\item {} 
+\sphinxAtStartPar
+At the start, the initiators p and q both send a basic message to r, and set cc\textless{}p\textgreater{} and cc\textless{}q\textgreater{} to 1. Next, p and q become passive.(See Figure 1)
+
+\item {} 
+\sphinxAtStartPar
+Upon receipt of the basic message from p, r becomes active and makes p its parent. Next, r receives the basic message from q, and sends back an acknowledgment, which causes q to decrease cc\textless{}q\textgreater{} to 0.(See Figure 2)
+
+\item {} 
+\sphinxAtStartPar
+Since q became passive as the root of a tree, and cc\textless{}q\textgreater{} = 0, it starts a wave. This wave does not complete, because p and r refuse to participate.(See Figure 3)
+
+\item {} 
+\sphinxAtStartPar
+r sends a basic message to q, and sets cc\textless{}r\textgreater{} to 1. Next, r becomes passive.(See Figure 4)
+
+\item {} 
+\sphinxAtStartPar
+Upon receipt of the basic message from r, q becomes active, and makes r its parent. Next, q becomes passive, and sends an acknowledgment to its parent r, which causes r to decrease cc\textless{}r\textgreater{} to 0. Since r is passive and cc\textless{}r\textgreater{} = 0, it sends an acknowledgment to its parent p, which causes p to decrease cc\textless{}p\textgreater{} to 0.(See Figure 5)
+
+\item {} 
+\sphinxAtStartPar
+Since p became passive as the root of a tree, and cc\textless{}p\textgreater{} = 0, it starts a wave. This wave completes, so that p calls Announce.(See Figure 6)
+
+\end{enumerate}
 
 
 \subsection{Correctness}
@@ -289,11 +310,11 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 \sphinxsetlistlabels{\arabic}{enumi}{enumii}{}{.}%
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Safety}: The \sphinxstyleemphasis{Announce} is called when a decision occurs in the wave algorithm. This implies that each process p has sent a wave message or has decided, and the algorithm implies that empty\_p was true when p did so. No action makes empty\_p false again, so (for each p) empty\_p is true when \sphinxstyleemphasis{Announce} is called.{[}Tel2001{]}\_
+\sphinxstylestrong{Safety}: The \sphinxstyleemphasis{Announce} is called when a decision occurs in the wave algorithm. This implies that each process p has sent a wave message or has decided, and the algorithm implies that empty\textless{}p\textgreater{} was true when p did so. No action makes empty\textless{}p\textgreater{} false again, so (for each p) empty\textless{}p\textgreater{} is true when \sphinxstyleemphasis{Announce} is called. \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}
 
 \item {} 
 \sphinxAtStartPar
-\sphinxstylestrong{Liveness}: Assume that the basic computation has terminated. Within a finite number of steps the termination\sphinxhyphen{}detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration F is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to \sphinxstyleemphasis{Announce}.{[}Tel2001{]}\_
+\sphinxstylestrong{Liveness}: Assume that the basic computation has terminated. Within a finite number of steps the termination\sphinxhyphen{}detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration F is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to \sphinxstyleemphasis{Announce}. \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}
 
 \item {} 
 \sphinxAtStartPar
@@ -305,7 +326,7 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 \subsection{Complexity}
 \label{\detokenize{docs/ShavitFranchezAlg/algorithm:complexity}}
 \sphinxAtStartPar
-The worst case message complexity of the {\hyperref[\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}]{\sphinxcrossref{\DUrole{std,std-ref}{Shavit\sphinxhyphen{}Francez Algorithm}}}} is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm. The algorithm is a worst\sphinxhyphen{}case optimal algorithm for termination detection of decentralized computations (if an optimal wave algorithm is supplied).{[}Tel2001{]}\_
+The worst case message complexity of the {\hyperref[\detokenize{docs/ShavitFranchezAlg/algorithm:shavitfranchesterminationdetectionalgorithm}]{\sphinxcrossref{\DUrole{std,std-ref}{Shavit\sphinxhyphen{}Francez Algorithm}}}} is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm. The algorithm is a worst\sphinxhyphen{}case optimal algorithm for termination detection of decentralized computations (if an optimal wave algorithm is supplied). \sphinxcite{docs/ShavitFranchezAlg/algorithm:tel2001}
 
 \sphinxstepscope
 

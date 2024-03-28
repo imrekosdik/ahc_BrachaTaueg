@@ -1,2 +1,2 @@
-.. |ShavitFranchezAlg| replace:: Distributed Algorithm Name 
+.. |ShavitFranchezAlg| replace:: Shavit-Francez Termination Detection Algorithm 
 
