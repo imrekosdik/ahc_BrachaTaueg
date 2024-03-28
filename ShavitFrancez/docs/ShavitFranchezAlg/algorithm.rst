@@ -11,17 +11,31 @@ Global termination in a distributed system occurs when all the processes are in 
 
 The primary consideration behind the termination detection algorithms is adding a control algorithm to the system running to detect whether the basic algorithm has reached a termination state. [Fokking2013]_Typically, the control algorithm has two phases: termination detection and the announcement "*Announce*" phase. This announcement algorithm brings the processes in a terminated state. Additionally, the control algorithm receives and sends control messages.  By preference, the termination detection part should not interfere with the ongoing activities in the distributed system and should not need new communication channels between the processes. 
 
-:ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` [Shavit1986]_ is the generalization of Dijkstra-Scholten [Dijkstra1980]_ Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>`  maintains a forest of trees, one for each initiator. Except the algorithm is mostly the same as the Dijkstra-Sholten algorithm. The termination is detected when the computation graph, the trees and the messages in transit, is empty.
-
+Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> [Shavit1986] is the generalization of Dijkstra-Scholten [Dijkstra1980] Termination Detection Algorithm for distributed systems. Maintaining trees of active processes is the core idea behind both algorithms. The difference is that the Dijkstra-Sholten Algorithm maintains a tree for one node, called the initiator, whereas the Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm> maintains a forest of trees, one for each initiator. The iniator nodes are the ones that start the execution of their local algorithms in the event related with the initiator itself. Non-initiator nodes are the ones that become involved in the algorithm only when a message of the algorithm arrives and triggers the execution of the process algorithm.[Tel2001]_. Lastly, the termination is detected when the computation graph, the trees and the messages in transit, is empty.
 
 Distributed Algorithm: |ShavitFranchezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+F = (V, E) is the computation graph of the algorithm, where
+	1. **F** is a forest of which each tree is rooted in an initiator
+	2. **V** includes all active processes and the basic messages.
+
+The algorithm terminates when the computation graph becomes empty. Since the algorithm maintains a forest of trees, each initiator is only aware of the emptiness of their own tree. Hovewer, this does not mean that the forest is empty. A single wave verifies that all of the trees have collapsed. A computation of a wave algorithm is a wave. The forest is  managed in a way where a tree, Tp, that becomes empty will remain empty permanently. It's important to note that this doesn't stop the initiator, p, from becoming active again. However, if p does become active again after its tree has collapsed, it will be placed into another initiator's tree. The wave is started by one of the initiators and the wave is tagged with the initator's ID. Only the processes whose tree has collapsed participate to the wave, and when the wave makes a decision, Announce is called. 
+
+Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that satisfies the following three requirements:
+	1. Termination: Each computation is finite.
+	2. Decision: Each computation contains at least one decide event.
+	3. Dependence: In each computation each decide event is causally preceded by an event in each process.
+
 
 .. _ShavitFranchesTerminationDetectionAlgorithm:
 
 .. code-block:: RST
     :linenos:
     :caption: Shavit-Francez Termination Detection Algorithm.
+    
+    bool active<p> // set when p becomes active, and reset when p becomes passive
+    nat cc<p> // keeps track of the number of children of p in its tree
+    proc parent<p> // the parent of p in a tree in the forest
     
     If p is an initiator then
         active<p> <- true;
@@ -69,7 +83,39 @@ Distributed Algorithm: |ShavitFranchezAlg|
 
 Example
 ~~~~~~~~
+.. list-table:: 
 
+    * - .. figure:: figures/step1.jpg
+
+           Fig 1. Step 1
+
+      - .. figure:: figures/step2.jpg
+
+           Fig 2. Step 2
+
+    * - .. figure:: figures/step3.jpg
+
+           Fig 3. Step 3
+           
+      - .. figure:: figures/step4.jpg
+
+           Fig 2. Step 4
+
+    * - .. figure:: figures/step5.jpg
+
+           Fig 2. Step 5
+
+      - .. figure:: figures/step6.jpg
+
+           Fig 2. Step 6
+
+Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is as follows:
+1. At the start, the initiators p and q both send a basic message to r, and set cc<p> and cc<q> to 1. Next, p and q become passive.(See Figure 1)
+2. Upon receipt of the basic message from p, r becomes active and makes p its parent. Next, r receives the basic message from q, and sends back an acknowledgment, which causes q to decrease cc<q> to 0.(See Figure 2)
+3. Since q became passive as the root of a tree, and cc<q> = 0, it starts a wave. This wave does not complete, because p and r refuse to participate.(See Figure 3)
+4. r sends a basic message to q, and sets cc<r> to 1. Next, r becomes passive.(See Figure 4)
+5. Upon receipt of the basic message from r, q becomes active, and makes r its parent. Next, q becomes passive, and sends an acknowledgment to its parent r, which causes r to decrease cc<r> to 0. Since r is passive and cc<r> = 0, it sends an acknowledgment to its parent p, which causes p to decrease cc<p> to 0.(See Figure 5)
+6. Since p became passive as the root of a tree, and cc<p> = 0, it starts a wave. This wave completes, so that p calls Announce.(See Figure 6)
 
 
 Correctness
