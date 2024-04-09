@@ -54,7 +54,7 @@ After computing each set of nodes, the algorithm consists of two phases. *Notify
 
     Upon receipt by v of Grant from a neighbor w:
     If requests > 0 then
-		  requests <- requestv - 1
+		  requests <- request - 1
         if requests = 0 then
 			    Perform procedure Grant
 		    end if
