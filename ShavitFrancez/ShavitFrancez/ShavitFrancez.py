@@ -1,9 +1,12 @@
+from adhoccomputing.Experimentation.Topology import Event
 from adhoccomputing.GenericModel import GenericModel
 from enum import Enum
 from adhoccomputing.Generics import *
+from adhoccomputing.Generics import Event
+from adhoccomputing.DistributedAlgorithms.Waves.TreeAlgorithm import TreeNode
 
 class ShavitFrancezEventTypes(Enum):
-    DETECTERMINATION = "DETECTTERMINATION"
+    DETECTTERMINATION = "DETECTTERMINATION"
 
 class ShavitFrancezMessageTypes(Enum):
     ACKNOWLEDGE = "ACKNOWLEDGE"
@@ -20,10 +23,10 @@ class ShavitFrancezComponentModel(GenericModel):
     def __init__(self, componentname, componentinstancenumber, context=None, configurationparameters=None, num_worker_threads=1, topology=None, child_conn=None, node_queues=None, channel_queues=None):
         super().__init__(componentname, componentinstancenumber, context, configurationparameters, num_worker_threads, topology, child_conn, node_queues, channel_queues)
         # event that triggers the initiation of the termination detection algorithm
-        self.eventhandlers[ShavitFrancezEventTypes.DETECTERMINATION] = self.on_receiving_detect_termination 
+        self.eventhandlers[ShavitFrancezEventTypes.DETECTTERMINATION] = self.on_receiving_detect_termination 
         # event that triggers the initiation of the Tree Wave algorithm
         self.eventhandlers[TreeEventTypes.STARTWAVE] = self.on_receiving_start_wave
-        self.eventhandlers[TreeEventTypes.DECIDE] = self.on_receiving_decide
+        # self.eventhandlers[TreeEventTypes.DECIDE] = self.on_receiving_decide
         
         # attributes related with the termination detection
         self.is_active = False; # states whether the process is active
@@ -34,41 +37,50 @@ class ShavitFrancezComponentModel(GenericModel):
         self.received_wave = dict() # keys are the neighboring components and values are boolean
         self.neighbors = [] # consists of component instance numbers
         self.wave_parent = None
-
+        
+        
     def on_connected_to_component(self, name, channel):
         super().on_connected_to_component(name, channel)
-        self.neighbors.add(channel.componentinstancenumber)
+        self.neighbors.append(channel.componentinstancenumber)
         self.received_wave[channel.componentinstancenumber] = False
     
-    def on_receiving_detect_termination(self):
+    def on_receiving_detect_termination(self, eventobj: Event):
         self.is_active = True
-        self.send_basic_message(self)
+        self.send_basic_message()
 
     def send_basic_message(self):
         self.number_of_children += 1
-        self.send_down(Event(self, EventTypes.MFRT, "Basic Message"))
+        self.send_down(Event(self, EventTypes.MFRT, None))
+        self.send_self(Event(self, EventTypes.MFRP, None))
+    
+    # state transition from ACTIVE to PASSIVE after sending BASIC message
+    def on_message_from_peer(self, eventobj: Event):
+        self.is_active = False
+        self.leave_tree()
 
-    def on_receiving_basic_message(self, event: Event):
+    # receiving BASIC message
+    def on_message_from_bottom(self, eventobj: Event):
         if not self.is_active:
             self.is_active = True
-            self.parent = event.eventsource
+            self.parent = eventobj.eventsource
         else:
             ack_message = GenericMessage(
-                GenericMessageHeader(ShavitFrancezMessageTypes.ACKNOWLEDGE, self, event.eventsource),
+                GenericMessageHeader(ShavitFrancezMessageTypes.ACKNOWLEDGE, self, eventobj.eventsource),
                 None)
             self.send_up(Event(self, EventTypes.MFRB, ack_message))
     
-    def on_receiving_acknowledge(self, event: Event):
+    # receiving ACKNOWLEGE message
+    def on_message_from_top(self, event: Event):
         self.number_of_children -= 1
-        self.leave_tree(self, event)
+        self.leave_tree()
     
-    def leave_tree(self, event: Event):
+    def leave_tree(self):
         if not self.is_active and self.number_of_children == 0:
             if self.parent is not None:
                 ack_message = GenericMessage(
                 GenericMessageHeader(ShavitFrancezMessageTypes.ACKNOWLEDGE, self, self.parent),
                 None)
-                self.send_up(Event(self, EventTypes.MFRB, ack_message))
+                self.send_up(Event(self, EventTypes.MFRP, ack_message))
                 self.parent = None
             else:
                 for neighbor in self.neighbors:
@@ -104,7 +116,7 @@ class ShavitFrancezComponentModel(GenericModel):
             wave_message = GenericMessage(
                 GenericMessageHeader(TreeMessageTypes.WAVE, self.componentinstancenumber, component_instance_number),
                 None)
-            self.send_down(Event(self, EventTypes.MFRT, wave_message))
+            self.send_down(Event(self, EventTypes.MFRP, wave_message))
             self.wave_parent = component_instance_number
         # send info to all of component's neighbors except its parent
         elif is_received_from_all:
@@ -114,5 +126,5 @@ class ShavitFrancezComponentModel(GenericModel):
                     info_message = GenericMessage(
                         GenericMessageHeader(TreeMessageTypes.INFO, self.componentinstancenumber, neighbor),
                         None)
-                    self.send_down(Event(self, EventTypes.MFRT, info_message))
+                    self.send_down(Event(self, EventTypes.MFRP, info_message))
 
