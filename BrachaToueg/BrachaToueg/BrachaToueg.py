@@ -1,7 +1,6 @@
 from adhoccomputing.GenericModel import GenericModel
 from enum import Enum
 from adhoccomputing.Generics import *
-from BrachaTouegAlg import LaiYangSnapshot
 
 class BrachaTouegEventTypes(Enum):
     DETECTDEADLOCK = "DETECTDEADLOCK"
