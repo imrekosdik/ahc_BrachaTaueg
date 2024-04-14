@@ -4,7 +4,6 @@
 =========================================
 
 
-
 Background and Related Work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Global termination in a distributed system occurs when all the processes are in the local termination state and processes do not send or receive any messages. Local termination means a process completes its execution and starts computation again upon receiving any message. Processes under this condition are passive (idle) and become active upon receiving any message. Only the active processes can perform the send event. Therefore, a distributed system terminates when its processes are idle. Note that the act of sending the message and receipt of it is atomic. 
@@ -29,6 +28,7 @@ Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that sati
 	2. **Decision:** Each computation contains at least one decide event.
 	3. **Dependence:** In each computation each decide event is causally preceded by an event in each process.
 
+For this implementation, we choose the Cidon's Depth First Search Algorithm [Fokking2013]_ as the wave algorithm. We do not give the implementation details of this algorithm in this paper, however, we briefly explain the working principle of the algorithm. Starting with the initiator, a process forwards a token to a process which has not yet held the token and it stores the process to which it sends the token to. If, at any point, it receives the token from a process A that has not in its list of forwarded processes, then it just does not take into the token and sets the channel between them as the front edge. The process A itself also sets the channes as the front edge and continues to forward the token to other processes.   
 
 .. _ShavitFranchesTerminationDetectionAlgorithm:
 
