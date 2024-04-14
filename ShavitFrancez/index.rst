@@ -12,9 +12,9 @@
    :maxdepth: 2
    :caption: Contents
 
-   docs/ShavitFrancezAlg/ShavitFrancezAlg
+   docs/ShavitFrancez/ShavitFrancez
    docs/rubric
-   docs/ShavitFrancezAlg/code
+   docs/ShavitFrancez/code
 
 .. ATTENTION::
    For RST details, please refer to `reStructuredText Documentation <https://docutils.sourceforge.io/rst.html>`_.
