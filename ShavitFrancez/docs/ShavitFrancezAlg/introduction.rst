@@ -15,3 +15,5 @@ The Shavit-Francez algorithm is an effective way to detect termination without i
 
 Our primary contributions consist of the following: 
 
+    Implementation of the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` on the AHCv2 platform. The implementation specifics are detailed in Section XX.
+    Examination of the performance of the algorithms across diverse topologies and usage scenarios. Results from these investigations are outlined in Section XXX.
