@@ -20,9 +20,8 @@ def main():
     time.sleep(1)
     components = list(topology.nodes.values())
     components[0].send_self(Event(components[0], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))
-    components[1].send_self(Event(components[1], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))
     time.sleep(20)
-    # topology.exit()
+    topology.exit()
 
 if __name__ == "__main__":
     exit(main())
