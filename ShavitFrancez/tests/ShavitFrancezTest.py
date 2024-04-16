@@ -5,7 +5,6 @@ import time
 sys.path.insert(0, os.getcwd())
 
 from adhoccomputing.Generics import *
-
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
 from ShavitFrancezDemo import ShavitFrancezComponentModel

@@ -12,9 +12,9 @@
    :maxdepth: 2
    :caption: Contents
 
-   docs/BrachaTouegAlg/BrachaTouegAlg
+   docs/BrachaToueg/BrachaToueg
    docs/rubric
-   docs/BrachaTouegAlg/code
+   docs/BrachaToueg/code
 
 .. ATTENTION::
    For RST details, please refer to `reStructuredText Documentation <https://docutils.sourceforge.io/rst.html>`_.

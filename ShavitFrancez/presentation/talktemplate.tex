@@ -35,7 +35,7 @@
 \def\false{\textbf{F}}
 
 
-\author[John Doe]{John Doe\\\href{mailto:john@example.com}{john@example.com}}
+\author[İmre KOSDİK]{İmre KOSDİK\\\href{mailto:imre.kosdik@metu.edu.tr}{imre.kosdik@metu.edu.tr}}
 %\author[J.\,Doe \& J.\,Doe]
 %{%
 %  \texorpdfstring{
@@ -53,15 +53,15 @@
 %  {John Doe \& Jane Doe}
 %}
 
-\title[WINS Beamer Template]{WINS Lab Beamer Presentation Template}
-\subtitle[Short SubTitle]{How to Prepare a Nice Presentation}
-%\date{} 
+\title[Termination and Deadlock Detection]{Termination  and Deadlock Detection in Distributed Systems}
+\subtitle[Short SubTitle]{Shavit-Francez Termination Detection Algorithm & Bracha-Toueg Deadlock Detection Algorithm}
+\date{} 
 
 \begin{document}
 
 \begin{frame}[plain]
 \titlepage
-\note{In this talk, I will present .... Please answer the following questions:
+\note{In this talk, I will present the two algorithms utilized for termination and deadlock detection in distributed systems. After the talk, I hope you will gain insight into the implementation details of these algorithms and analyze their performance from the message and time complexity perspective from the experimentation results. Both the termination and deadlock issues are widespread not only in distributed systems but also in the operating systems of our computers. From the operating system perspective, a deadlock is a condition where processes wait for each other indefinitely in a cyclic manner. Handling deadlocks is an intriguing and substantial issue in utilizing the system resources efficiently and preventing performance degradation. We say that a process terminates when it finishes its computation and is ready to perform its remaining tasks. Detecting the process termination is critical in the same sense as deadlock detection because processes may depend on others to finish their execution to use their outputs or the resources they used. These concepts we are familiar with in the operating systems area apply to distributed systems. Therefore, understanding and employing these algorithms in distributed systems is prominent. 
 \begin{enumerate}
 \item Why are you giving presentation?
 \item What is your desired outcome?
@@ -75,14 +75,15 @@
 \begin{frame}[label=toc]
     \frametitle{Outline of the Presentation}
     \tableofcontents[subsubsectionstyle=hide]
-\note{ The possible outline of a talk can be as follows.
+\note{ Here is my outline for the presentation. Since I have two distinct algorithms, I plan to explain the details of both the algorithms on each section. 
 \begin{enumerate}
 \item Outline 
-\item Problem and background
-\item Design and methods
-\item Major findings
-\item Conclusion and recommendations 
-\end{enumerate} Please select meaningful section headings that represent the content rather than generic terms such as ``the problem''. Employ top-down structure: from general to more specific.
+\item The Deadlock and Termination Detection Problems
+\item The Related Works and Background Research on Deadlock and Termination Detection
+\item My Contribution on Deadlock Detection and Termination Detection Algorithms
+\item The Results of Experiments on Deadlock Detection and Termination Detection
+\item Conclusion and Recommendations 
+\end{enumerate}
 }
 \end{frame}
 %
@@ -91,43 +92,78 @@
 %        \partpage
 %\end{frame}
 %
-\section{The Problem}
+\section{The Problem of Deadlock Detection And Termination Detection}
 %\begin{frame}
 %        \sectionpage
 %\end{frame}
 
-\begin{frame}{The problem}
-\framesubtitle{Tell a \alert{STORY} from the background to the conclusion}
-\begin{block}{The Problem Name} 
-Explain the problem here. Instead of using the term `The problem'', please use specific name for the problem. Tell us a story. Provide a picture for the scenario depicting the problem. Set the scene for average audience.
-\end{block}
-Spend at least \textbf{1.5-2 minutes per slide} on average.
+\begin{frame}{The Problem of Deadlock Detection}
+%\framesubtitle{Tell a \alert{STORY} from the background to the conclusion}
 
-The introduction should be something like ``I will be presenting title of talk. This is joint work with your colleagues or advisor at institution.'' 
-\note{}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{figures/deadlock.png}
+    \caption{Distributed System with Deadlocks}
+    \label{fig:distributed_system_with_deadlocks}
+\end{figure}
+
+\begin{block}{Deadlock Detection} 
+Deadlock is a state where processes in a distributed system wait indefinitely for each other to allocate resources to perform their computations. Deadlock detection requires analyzing the running system for cyclic dependencies.
+\end{block}
+
+\note{Deadlock Detection: Processes need resources to perform their computations. However, the resources may not always be available because another process may be using them at that time. In such a case, the process needs to wait for another process to release its resources. Sometimes, this wait becomes cyclic, and none of the processes can continue execution because they cannot allocate resources. This system state is the deadlock state in a distributed system. Therefore, to detect the deadlocks, we need to look for cyclic dependencies in the system. For example, in the figure, there is a cyclic dependency in P11, P21, P34 and P54. Deadlock detection is a fundamental problem because none of the processes are aware of the global system state, and processes do not share any global clock.}
 \end{frame}
 
-\section{The Contribution}
+\begin{frame}{The Problem of Termination Detection}
+
+\begin{block}{Termination Detection} 
+Termination detection is the problem of determining if a distributed computation has terminated. A distributed system terminates when all its processes become passive with no messages in transit. Termination detection requires a particular process (or all of the processes) to infer when the underlying computation has terminated.
+\end{block}
+%Spend at least \textbf{1.5-2 minutes per slide} on average.
+
+%The introduction should be something like ``I will be presenting title of talk. This is joint work with your colleagues or advisor at institution.'' 
+
+\note{Termination Detection: Termination detection is the problem of determining whether a distributed computation has terminated. Processes can be either in an active state or in a passive state. We say that a distributed computation terminates when all the processes transition to a passive state and no messages are in transit. Determining the termination requires one or more processes to infer when the computation has terminated. Termination detection is a fundamental problem in the same sense as the deadlock detection problem. Additionally, processes may reactivate each other by sending messages. This issue increases the challenge.}
+
+\end{frame}
+
+\section{The Contributions}
 \begin{frame}
-\frametitle{What is the solution/contribution}
+\frametitle{Contributions To The Deadlock Detection and Termination Detection Algorithms}
 \framesubtitle{}
-Explain \textbf{YOUR} contributions. Go top-down. Give the brief introduction to the contributions at the beginning of the presentation. A slide should have no more than five to six lines of text or bullets. Prefer figures instead of text: A picture is worth a thousand words.
 \begin{itemize}
-\item Communicate the Key Ideas
-\item Don’t get Bogged Down in Details
-\item Use a Top-down Approach
+\item Implementation of Shavit-Francez termination detection algorithm on AHCv2 platform
+\item Performance analysis of Shavit-Francez algorithm
+\item Implementation of Bracha-Toueg deadlock detection algorithm on AHCv2 platform
+\item Performance analysis of Bracha-Toueg algorithm
 \end{itemize}
 
-The audience will remember at most one single message \textbf{Which message you want to audience to remember? Can you express this message in less than a minute in an elevator?}
-
+\note{As a contribution, I implemented both of the algorithms using the AHC library and conducted different experiments on my implementations to analyze the performance of both algorithms in terms of message and time complexity.}
 \end{frame}
 
 
 \section{Motivation/Importance}
 \begin{frame}
-\frametitle{Motivation/Importance}
-\framesubtitle{``Gain upon solving the problem, pain if not solved'' should be explained}
-Explain why the problem is so important. Throw in a little philosophy if necessary. How does the problem fit into the larger picture? If it involves a model of a real-world phenomenon, then how good is the model? What are its applications? What makes the problem nontrivial? You can return to these issues in the Conclusion, when you can re-address them with the benefit of hindsight.
+\frametitle{Motivation/Importance of Detecting Termination}
+\framesubtitle{Shavit-Francez Termination Detection Algorithm}
+\begin{itemize}
+\item Crucial to determine which processes terminated execution since other processes depend on their outputs.
+\item Achieving a \textbf{consistent} system state which results in preserving the \textbf{correctness} of the system.
+\item Efficient resource utilization with the possibility of preventing \textbf{deadlocks}.
+\item A significant challenge because processes do not share a \textbf{global clock} and do not have the knowledge of the \textbf{global state} of the system.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivation/Importance of Detecting Deadlocks}
+\framesubtitle{Brahca-Toueg Deadlock Detection Algorithm}
+\begin{itemize}
+\item Prevent system failures resulting in increased \textbf{reliability}.
+\item Prevent waste of resources to positively affect system's \textbf{response} time and \textbf{throughput}.
+\item A significant challenge because processes do not share a \textbf{global clock} and do not have the knowledge of the \textbf{global state} of the system.
+\item \textbf{Lack of shared memory} causes issues related to constructing and maintaining the system state graph which the algorithm runs on.
+\end{itemize}
 \end{frame}
 
 \section{Background/Model/Definitions/Previous Works}
@@ -136,16 +172,46 @@ Explain why the problem is so important. Throw in a little philosophy if necessa
 \subsection{Model, Definitions}
 
 \frame{
-\frametitle{Model, Definitions}
-\framesubtitle{Formal definition of a Stochastic Process}
-The use of terminology and jargon should be kept to a minimum, but is impossible to avoid entirely. All terms must be introduced early. It is also useful to remind the audience of the definitions at critical points later in the talk.
+\frametitle{Model and Definitions for Deadlock Detection}
 
-Background and this slide can be combined....
+\begin{block}{Definitions} 
+\begin{itemize}
+\item \textbf{N-out-of-M Requests Deadlock Model}: A process makes M requests and can continue execution only if it obtains at least N resources.
+\item \textbf{Wait-For-Graph (WFG):} A graph modeling the resource or communication dependencies. Nodes are processes, and there is a directed edge from one node to another if the first node waiting to acquire a resource that the second one is currently holding. 
+\end{itemize}
+\end{block}
 }
+
+\frame{
+\frametitle{Model and Definitions for Deadlock Detection}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.3]{figures/deadlock2.png}
+    \caption{Distributed System with Deadlocks}
+    \label{fig:distributed_system_with_deadlocks2}
+\end{figure}
+\begin{block}{Definitions} 
+\begin{itemize}
+\item \textbf{Active Process:} Process that holds all the resources it needs and is either executing or ready to execute.
+\item \textbf{Blocked Process:} Process waiting to acquire the resources it needs. An active process becomes blocked once it sends an N-out-of-M request and remains blocked until at least N of the resources are granted to it.
+\end{itemize}
+\end{block}
+}
+
+\frame{
+\frametitle{Model and Definitions for Termination Detection}
+
+\begin{block}{Definitions} 
+\begin{itemize}
+
+\end{itemize}
+\end{block}
+}
+
 
 \subsection{Background, Previous Works}
 \begin{frame}{Background}
-Research is not usually carried out in a vacuum. There will almost always be other relevant or related work, which you should describe. Present an orderly synopsis of these previously- obtained results. A table is often used for this purpose. Be sure to mention the author of each paper and its date of publication. \textbf{Compare and contrast them with each other and with your paper.}
+
 \end{frame}
 
 
