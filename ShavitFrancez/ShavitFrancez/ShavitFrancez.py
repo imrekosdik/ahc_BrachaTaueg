@@ -10,11 +10,13 @@ class ShavitFrancezEventTypes(Enum):
     STARTWAVE = "STARTWAVE" # event that triggers the wave algorithm
     BECOMEPASSIVE = "BECOMEPASSIVE" # event that makes an active process transition to passive state
     BECOMEACTIVE = "BECOMEACTIVE" # event that makes a passive process transition to active state
-    
+
+
 class ShavitFrancezMessageTypes(Enum):
     ACKNOWLEDGE = "ACKNOWLEDGE"
     BASICMESSAGE = "BASICMESSAGE"
     WAVE = "WAVE"
+
 
 class ShavitFrancezComponentModel(GenericModel):
     def __init__(self, componentname, componentinstancenumber, context=None, configurationparameters=None, num_worker_threads=1, topology=None, child_conn=None, node_queues=None, channel_queues=None):
@@ -83,12 +85,20 @@ class ShavitFrancezComponentModel(GenericModel):
 
 
     def on_receiving_become_active(self, eventobj: Event):
+        '''
+        The process receiving the BECOMEACTIVE event transitions to active 
+        state if not already active, and sends basic messages to its neighbors.
+        '''
         if not self.is_active:
             self.is_active = True
         self.send_basic_message()
 
 
     def on_receiving_become_passive(self, eventobj: Event):
+        '''
+        The process receiving the BECOMEPASSIVE event transitions to passive
+        state if not already passive, and calls the leave tree procedure.
+        '''
         if self.is_active:
             self.is_active = False
         self.leave_tree()
