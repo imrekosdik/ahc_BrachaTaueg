@@ -7,14 +7,13 @@ sys.path.insert(0, os.getcwd())
 from adhoccomputing.Generics import *
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
-from ShavitFrancezDemo import ShavitFrancezComponentModel
-from ShavitFrancezDemo import ShavitFrancezEventTypes
+from ShavitFrancez.ShavitFrancez.ShavitFrancez import *
 
 # Wrap Snapshot in a node model!
 def main():
     setAHCLogLevel(DEBUG)
     topology = Topology()
-    topology.construct_winslab_topology_with_channels(3, ShavitFrancezComponentModel, GenericChannel)
+    topology.construct_winslab_topology_with_channels(3, Node, GenericChannel)
     topology.start()
     time.sleep(1)
     components = list(topology.nodes.values())

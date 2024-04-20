@@ -24,11 +24,11 @@ extensions = [
     'sphinx.ext.intersphinx',  # Link to other project's documentation (see mapping below)
     'sphinx.ext.viewcode',  # Add a link to the Python source code for classes, functions etc.
     'sphinx_autodoc_typehints', # Automatically document param types (less noise in class signature)
+    'nbsphinx',  # Integrate Jupyter Notebooks and Sphinx
     "sphinx.ext.napoleon",
     'sphinx.ext.autosummary',  # Create neat summary tables for modules/classes/methods etc
-    "sphinx_autodoc_typehints",
-    "sphinx.ext.autosectionlabel",
-]
+    "sphinx_autodoc_typehints", 
+]   
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 autodoc_member_order = "bysource"
@@ -37,8 +37,9 @@ html_show_sourcelink = False  # Remove 'view source code' from top of page (for 
 autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
 set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
 nbsphinx_allow_errors = True  # Continue through Jupyter errors
-autodoc_typehints = "description" # Sphinx-native method. Not as good as sphinx_autodoc_typehints
+#autodoc_typehints = "description" # Sphinx-native method. Not as good as sphinx_autodoc_typehints
 add_module_names = True # Remove namespaces from class/method signatures
+
 
 
 templates_path = ['_templates']
