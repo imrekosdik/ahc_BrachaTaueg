@@ -18,12 +18,10 @@ def create_undirected_ring():
     undirectedRing.add_node(1)
     undirectedRing.add_node(2)
     undirectedRing.add_node(3)
-    undirectedRing.add_node(4)
     # crate an undirecred ring from three of the nodes
     undirectedRing.add_edge(1, 2)
+    undirectedRing.add_edge(2, 3)
     undirectedRing.add_edge(1, 3)
-    undirectedRing.add_edge(3, 4)
-    undirectedRing.add_edge(2, 4)
 
     # nx.draw(undirectedRing, with_labels=True, font_weight='bold')
     # plt.draw()
@@ -40,12 +38,11 @@ def main():
     time.sleep(5)
     components = list(topology.nodes.values())
     components[0].send_request_to_component(components[1].componentinstancenumber)
-    components[0].send_request_to_component(components[2].componentinstancenumber)
-    components[1].send_request_to_component(components[3].componentinstancenumber)
-    components[3].send_request_to_component(components[2].componentinstancenumber)
+    components[1].send_request_to_component(components[2].componentinstancenumber)
+    components[2].send_request_to_component(components[0].componentinstancenumber)
     time.sleep(10)
     components[0].send_self(Event(components[0], BrachaTouegEventTypes.DETECTDEADLOCK, eventcontent="Initiator"))   
     
-    time.sleep(40)
+    time.sleep(50)
 if __name__ == "__main__":
     exit(main())
