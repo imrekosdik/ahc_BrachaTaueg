@@ -4,8 +4,7 @@ import time
 
 sys.path.insert(0, os.getcwd())
 
-from BrachaToueg import BrachaTouegComponentModel
-from BrachaToueg import BrachaTouegEventTypes
+from BrachaToueg.BrachaToueg.BrachaToueg import BrachaTouegEventTypes, Node
 from adhoccomputing.Experimentation.Topology import *
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
 
@@ -14,7 +13,7 @@ from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChan
 def main():
     setAHCLogLevel(DEBUG)
     topology = Topology()
-    topology.construct_winslab_topology_with_channels(3, BrachaTouegComponentModel, GenericChannel)
+    topology.construct_winslab_topology_with_channels(3, Node, GenericChannel)
     topology.start()
     time.sleep(1)
     components = list(topology.nodes.values())
