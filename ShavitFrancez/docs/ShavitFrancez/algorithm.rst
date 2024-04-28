@@ -107,26 +107,25 @@ Echo Algorithm:
 
 Example
 ~~~~~~~~
-.. list-table:: 
-
-    * - Figure 1: Step 1
-        .. figure:: figures/shavit_step1.png
-
-      - Figure 2: Step 2
-        .. figure:: figures/shavit_step2.png
-
-    * - Figure 3: Step 3
-        .. figure:: figures/shavit_step3.png
-
-      - Figure 4: Step 4
-        .. figure:: figures/shavit_step4.png
-
-    * - Figure 5: Step 5
-        .. figure:: figures/shavit_step5.png
-
-      - Figure 6: Step 6
-        .. figure:: figures/shavit_step1.png
-
++-----------------------------------------------++-----------------------------------------------+
+| .. figure:: figure:: figures/shavit_step1.png | .. figure:: figure:: figures/shavit_step2.png  |
+|                                               |                                                |
+|                                               |                                                |
+|   Figure 1: Step 1                            |  Figure 2: Step 2                              |
+|                                               |                                                |
++-----------------------------------------------++-----------------------------------------------+
+| .. figure:: figure:: figures/shavit_step3.png | .. figure:: figure:: figures/shavit_step4.png  |
+|                                               |                                                |
+|                                               |                                                |
+|   Figure 3: Step 3                            |  Figure 4: Step 4                              |
+|                                               |                                                |
++-----------------------------------------------++-----------------------------------------------+
+| .. figure:: figure:: figures/shavit_step5.png | .. figure:: figure:: figures/shavit_step5.png  |
+|                                               |                                                |
+|                                               |                                                |
+|   Figure 5: Step 5                            |  Figure 5: Step 5                              |
+|                                               |                                                |
++-----------------------------------------------+------------------------------------------------+
 
 Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is as follows:
 
