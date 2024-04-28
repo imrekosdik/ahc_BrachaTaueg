@@ -77,8 +77,7 @@ Echo Algorithm:
 
 .. _EchoAlgorithm:
 
-.. code-block:: RST
-    
+.. code-block:: RST 
     :linenos:
     :caption: Echo Algorithm
 
