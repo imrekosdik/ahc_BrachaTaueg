@@ -14,7 +14,8 @@ The primary consideration behind the termination detection algorithms is adding 
 
 The wave algorithm we choose for the implementation in :ref:`Shavit-Francez Termination Detection Algorithm <ShavitFranchesTerminationDetectionAlgorithm>`  is :ref:`Echo Algorithm <EchoAlgorithm>` [Fokking2013]_. The :ref:`Echo Algorithm <EchoAlgorithm>` initiator begins by sending messages to all of its neighbors. If a non-initiator receives a message for the first time, it sets its parent as the sender process and sends a message to all its neighbors except its parent. After receiving messages from all its neighbors, the non-initiator notifies its parent. Finally, the initiator receives messages from all its neighbors and decides.
 
-Distributed Algorithm: |ShavitFrancezAlg| 
+
+Shavit-Francez Termination Detection Algorithm: |ShavitFrancezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. _ShavitFranchesTerminationDetectionAlgorithm:
@@ -71,9 +72,13 @@ Distributed Algorithm: |ShavitFrancezAlg|
         end if
 
 
+Echo Algorithm:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. _EchoAlgorithm:
 
 .. code-block:: RST
+    
     :linenos:
     :caption: Echo Algorithm
 
@@ -101,6 +106,7 @@ Distributed Algorithm: |ShavitFrancezAlg|
             end if
         end if
     end if
+
 
 Example
 ~~~~~~~~
