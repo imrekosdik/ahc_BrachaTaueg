@@ -109,29 +109,24 @@ Example
 ~~~~~~~~
 .. list-table:: 
 
-    * - .. figure:: figures/step1.jpg
+    * - Figure 1: Step 1
+        .. figure:: figures/shavit_step1.png
 
-           Step 1
+      - Figure 2: Step 2
+        .. figure:: figures/shavit_step2.png
 
-      - .. figure:: figures/step2.jpg
+    * - Figure 3: Step 3
+        .. figure:: figures/shavit_step3.png
 
-           Step 2
+      - Figure 4: Step 4
+        .. figure:: figures/shavit_step4.png
 
-    * - .. figure:: figures/step3.jpg
+    * - Figure 5: Step 5
+        .. figure:: figures/shavit_step5.png
 
-           Step 3
-           
-      - .. figure:: figures/step4.jpg
+      - Figure 6: Step 6
+        .. figure:: figures/shavit_step1.png
 
-           Step 4
-
-    * - .. figure:: figures/step5.jpg
-
-            Step 5
-
-      - .. figure:: figures/step6.jpg
-
-           Step 6
 
 Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is as follows:
 
