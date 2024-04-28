@@ -17,7 +17,6 @@ The wave algorithm we choose for the implementation in :ref:`Shavit-Francez Term
 
 Shavit-Francez Termination Detection Algorithm: |ShavitFrancezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. _ShavitFranchesTerminationDetectionAlgorithm:
 
 .. code-block:: RST
@@ -74,7 +73,6 @@ Shavit-Francez Termination Detection Algorithm: |ShavitFrancezAlg|
 
 Echo Algorithm:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. _EchoAlgorithm:
 
 .. code-block:: RST 
@@ -147,15 +145,19 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 
 Correctness
 ~~~~~~~~~~~
-
 1. **Safety**: The *Announce* is called when a decision occurs in the wave algorithm. This implies that each process p has sent a wave message or has decided, and the algorithm implies that cc<p> was 0 when p did so. No action makes cc<p> more than 0 again, so (for each p) cc<p> is 0 when *Announce* is called. [Tel2001]_
-2. **Liveness**: Assume that the basic computation has terminated. Within a finite number of steps the termination-detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration F is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to *Announce*. [Tel2001]_
-3. **Correctness**: Define S to be the sum of all sun-counts. Initially S is zero, S is incremented when a basic message is sent, S is decremented when a control message is received, and S is never negative. This implies that the number of control messages never exceeds the number of basic messages in any computation. [Tel2001]_
+2. **Liveness**: Assume that the basic computation has terminated. Within a finite number of steps the termination-detection algorithm reaches a terminal configuration, and as in the correctness statement below it can be shown that in this configuration the forest is empty. Consequently, all events of the wave are enabled in every process, and that the configuration is terminal now implies that all events of the wave have been executed, including at least one decision, which caused a call to *Announce*. [Tel2001]_
+3. **Correctness**: Define S to be the sum of all cc<p> for each process p. Initially S is zero, S is incremented when a basic message is sent, S is decremented when a control message is received, and S is never negative. This implies that the number of control messages never exceeds the number of basic messages in any computation. [Tel2001]_
+
 
 Complexity 
 ~~~~~~~~~~
-The worst case message complexity of the :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm. The algorithm is a worst-case optimal algorithm for termination detection of decentralized computations (if an optimal wave algorithm is supplied). [Tel2001]_ 
+1. :ref:`Shavit-Francez Algorithm <ShavitFranchesTerminationDetectionAlgorithm>`: The worst case message complexity  is O(M + W) where M is the number of the messages sent by the underlying computation and W is a message exchange complexity of the wave algorithm, which is 2E for :ref:`Echo Algorithm <EchoAlgorithm>` where E is. [Tel2001]_ 
+2. :ref:`Echo Algorithm <EchoAlgorithm>`: The message complexity is O(2E), where E is the number of edges. [Fokking2013]_
 
+
+References 
+~~~~~~~~~~
 .. [Shavit1986] Shavit, N. and Francez, N. A new approach to the detection of locally indicative stability. In proc. Int. Colloq. Automata, Languages, and Programming (1986), L. Kott (ed.), vol. 226 of Lecture Notes in Computer Science, Springer-Verlag, pp. 344-358.
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
 .. [Dijkstra1980] Dijkstra, E. W. and Scholten, C. S. Termination detection for diffusing computations. Inf. Proc. Lett. 11, 1 (1980), 1-4.
