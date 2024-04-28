@@ -12,24 +12,10 @@ The primary consideration behind the termination detection algorithms is adding 
 
 :ref:`Shavit-Francez Termination Detection Algorithm <ShavitFranchesTerminationDetectionAlgorithm>` maintains a forest instead of a single tree due to the nature of the distributed system. Each initiator maintains its tree and constitutes it to the forest. The condition for a process to join a tree is that it is not already a member of any of the trees in the forest. Other than that, the algorithm continues as in the Dijkstra-Scholten Algorithm. Instead, it starts a wave in which only those processes not part of a tree participate. Because each initiator is only aware of the emptiness of its tree, an empty tree does not guarantee that the whole forest is empty. The wave algorithm ensures that all the trees in the forest collapse before announcing termination. Once the wave decides, the initiator can then announce the termination. A wave algorithm is not complete unless all the processes take part in its execution. Following this property, the algorithm ensures that if none of the waves started by the processes are complete because a process refuses to take part, the initiator maintaining the last tree to be empty will start a wave that eventually decides and announces the termination. [Fokking2013]_ 
 
+The wave algorithm we choose for the implementation in :ref:`Shavit-Francez Termination Detection Algorithm <ShavitFranchesTerminationDetectionAlgorithm>`  is :ref:`Echo Algorithm <EchoAlgorithm>` [Fokking2013]_. The :ref:`Echo Algorithm <EchoAlgorithm>` initiator begins by sending messages to all of its neighbors. If a non-initiator receives a message for the first time, it sets its parent as the sender process and sends a message to all its neighbors except its parent. After receiving messages from all its neighbors, the non-initiator notifies its parent. Finally, the initiator receives messages from all its neighbors and decides.
 
 Distributed Algorithm: |ShavitFrancezAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-F = (V, E) is the computation graph of the algorithm, where
-
-	1. **F** is a forest of which each tree is rooted in an initiator
-	2. **V** includes all active processes and the basic messages.
-
-The algorithm terminates when the computation graph becomes empty. Since the algorithm maintains a forest of trees, each initiator is only aware of the emptiness of their own tree. Hovewer, this does not mean that the forest is empty. A single wave verifies that all of the trees have collapsed. A computation of a wave algorithm is a wave. The forest is  managed in a way where a tree, Tp, that becomes empty will remain empty permanently. It's important to note that this doesn't stop the initiator, p, from becoming active again. However, if p does become active again after its tree has collapsed, it will be placed into another initiator's tree. The wave is started by one of the initiators and the wave is tagged with the initator's ID. Only the processes whose tree has collapsed participate to the wave, and when the wave makes a decision, Announce is called. 
-
-Wave Algorithm [Tel2001]_: A wave algorithm is a distributed algorithm that satisfies the following three requirements:
-
-	1. **Termination:** Each computation is finite.
-	2. **Decision:** Each computation contains at least one decide event.
-	3. **Dependence:** In each computation each decide event is causally preceded by an event in each process.
-
-For this implementation, we choose the Cidon's Depth First Search Algorithm [Fokking2013]_ as the wave algorithm. We do not give the implementation details of this algorithm in this paper, however, we briefly explain the working principle of the algorithm. Starting with the initiator, a process forwards a token to a process which has not yet held the token and it stores the process to which it sends the token to. If, at any point, it receives the token from a process A that has not in its list of forwarded processes, then it just does not take into the token and sets the channel between them as the front edge. The process A itself also sets the channes as the front edge and continues to forward the token to other processes.   
 
 .. _ShavitFranchesTerminationDetectionAlgorithm:
 
@@ -41,16 +27,16 @@ For this implementation, we choose the Cidon's Depth First Search Algorithm [Fok
     nat cc<p> // keeps track of the number of children of p in its tree
     proc parent<p> // the parent of p in a tree in the forest
     
-    If p is an initiator then
-        active<p> <- true;
+    if p is an initiator then
+        active<p> <- true
     end if
 
-    If p sends a basic message then
+    if p sends a basic message then
         cc<p> <- cc<p> + 1
     end if
 
-    If p receives a basic message from a neighbor q then
-        If active<p> = false then
+    if p receives a basic message from a neighbor q then
+        if active<p> = false then
             active<p> <- true
             parent<p> <- q
         else 
@@ -58,19 +44,19 @@ For this implementation, we choose the Cidon's Depth First Search Algorithm [Fok
         end if
     end if
 
-    If p receives <ack>
+    if p receives <ack>
         cc<p> <- cc<p> - 1
         perform procedure LeaveTree<p>
     end if
 
-    If p becomes passive
+    if p becomes passive
         active<p> <- false
         perform procedure LeaveTree<p>;
     end if
 
     Procedure LeaveTree<p>
-        If active<p> = false and cc<p> = 0 then
-            If parent<p> != ┴ then 
+        if active<p> = false and cc<p> = 0 then
+            if parent<p> != ┴ then 
                 send <ack> to parent<p>
                 parent<p> <- ┴
             else
@@ -78,12 +64,43 @@ For this implementation, we choose the Cidon's Depth First Search Algorithm [Fok
             end if
         end if
     
-    If p receives a wave message then
-        If active<p> = false and cc<p> = 0 then
+    if p receives a wave message then
+        if active<p> = false and cc<p> = 0 then
             act according to the wave algorithm
             in the case of a decive event, call Announce
         end if
 
+
+.. _EchoAlgorithm:
+
+.. code-block:: RST
+    :linenos:
+    :caption: Echo Algorithm
+
+    nat received<p>;
+    proc parent<p>;
+
+    if p is the initiator then
+        send <wave> to each r in Neighbors<p>
+    end if
+    
+    if p receives a <wave> from neighbor q then
+        received<p> <- received<p> + 1
+        if parent<p> != ┴ and p is a non-initiator then 
+            parent<p> <- q
+            if |Neighbors<p>| > 1 then
+                send <wave> to each r in Neighbors<p>\{q}
+            else
+                send <wave> to q
+            end if
+        else if received<p> = |Neighbors<p>| then
+            if parent<p> != ┴ then 
+                send <wave> to parent<p>
+            else
+                decide
+            end if
+        end if
+    end if
 
 Example
 ~~~~~~~~
