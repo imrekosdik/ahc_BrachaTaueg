@@ -238,7 +238,7 @@ class BrachaTouegComponentModel(GenericModel):
         if not self.notified:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} calls notify")
             self.notify()
-    
+
         logger.critical(f"{self.componentname}.{self.componentinstancenumber} sent DONE to {self.componentname}.{messagefrom}")
         header = GenericMessageHeader(BrachaTouegMessageTypes.DONE, self.componentinstancenumber, messagefrom)
         self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), messagefrom))
@@ -257,8 +257,7 @@ class BrachaTouegComponentModel(GenericModel):
         header = GenericMessageHeader(BrachaTouegMessageTypes.ACKNOWLEDGE, self.componentinstancenumber, messagefrom)
         self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None)))
         
-        
-    
+
     def on_receiving_acknowledge(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
         if messagefrom in self.received_requests:
