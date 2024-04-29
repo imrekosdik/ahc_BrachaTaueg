@@ -42,7 +42,10 @@ class ShavitFrancezComponentModel(GenericModel):
 
 
     def on_receiving_send_basic_message(self, eventobj):
-        self.send_basic_message()
+        if self.is_active:
+            self.send_basic_message()
+        else:
+            logger.error("The process is not active, it cannot send any messages.")
    
     
     def on_receiving_detect_termination(self, eventobj):
