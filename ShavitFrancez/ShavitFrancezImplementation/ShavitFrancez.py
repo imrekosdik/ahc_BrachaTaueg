@@ -8,6 +8,7 @@ from adhoccomputing.Generics import *
 class ShavitFrancezEventTypes(Enum):
     DETECTTERMINATION = "DETECTTERMINATION" # event that triggers the termination detection algorithm
     BECOMEPASSIVE = "BECOMEPASSIVE" # event that makes an active process transition to passive state
+    SENDBASICMESSAGE = "SENDBASICMESSAGE" # event that makes an active process to send a message to another process
     
 
 class ShavitFrancezMessageTypes(Enum):
@@ -22,6 +23,7 @@ class ShavitFrancezComponentModel(GenericModel):
 
         self.eventhandlers[ShavitFrancezEventTypes.DETECTTERMINATION] = self.on_receiving_detect_termination 
         self.eventhandlers[ShavitFrancezEventTypes.BECOMEPASSIVE] = self.on_receiving_become_passive
+        self.eventhandlers[ShavitFrancezEventTypes.SENDBASICMESSAGE] = self.on_receiving_send_basic_message
 
         self.neighbors = []
         self.is_active = False
@@ -37,7 +39,11 @@ class ShavitFrancezComponentModel(GenericModel):
         logger.critical(f"{self.componentname}.{self.componentinstancenumber} is initialized")
         for neighbor in self.topology.G.neighbors(self.componentinstancenumber):
             self.neighbors.append(neighbor)
-        
+
+
+    def on_receiving_send_basic_message(self, eventobj):
+        self.send_basic_message()
+   
     
     def on_receiving_detect_termination(self, eventobj):
         '''
@@ -49,7 +55,6 @@ class ShavitFrancezComponentModel(GenericModel):
         if not self.is_active:
             self.is_active = True
         self.termination_parent = self.componentinstancenumber
-        self.send_basic_message()
 
 
     def on_receiving_basic_message(self, eventobj: Event):

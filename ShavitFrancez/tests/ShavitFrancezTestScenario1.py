@@ -38,6 +38,8 @@ def main():
     components[0].termination_initiators.append(components[0].componentinstancenumber)
     components[1].termination_initiators.append(components[0].componentinstancenumber)
     components[0].send_self(Event(components[0], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))   
+    components[0].send_self(Event(components[0], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))
+    components[1].send_self(Event(components[1], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))
     components[0].send_self(Event(components[0], ShavitFrancezEventTypes.BECOMEPASSIVE, eventcontent="PASSIVE"))
     time.sleep(10)
     components[1].send_self(Event(components[1], ShavitFrancezEventTypes.BECOMEPASSIVE, eventcontent="PASSIVE"))
