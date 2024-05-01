@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from adhoccomputing.Generics import *
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
-from BrachaToueg.BrachaTouegImplementation.BrachaToueg import BrachaTouegComponentModel, BrachaTouegEventTypes
+from BrachaToueg.BrachaTouegImplementation.BrachaTouegDemo import BrachaTouegComponentModel, BrachaTouegEventTypes
 
 
 def create_undirected_ring():
@@ -31,18 +31,20 @@ def create_undirected_ring():
 
 
 def main():
+    setAHCLogLevel(INFO)
     undirectedRing = create_undirected_ring()
     topology = Topology()
     topology.construct_from_graph(undirectedRing, BrachaTouegComponentModel, GenericChannel)
     topology.start()
     time.sleep(5)
     components = list(topology.nodes.values())
-    components[0].send_request_to_component(components[1].componentinstancenumber)
-    components[1].send_request_to_component(components[2].componentinstancenumber)
-    components[2].send_request_to_component(components[0].componentinstancenumber)
+    time.sleep(10)
+    components[0].send_request_to_component(components[1])
+    components[0].send_request_to_component(components[2])
+    components[1].send_request_to_component(components[2])
     time.sleep(10)
     components[0].send_self(Event(components[0], BrachaTouegEventTypes.DETECTDEADLOCK, eventcontent="Initiator"))   
     
-    time.sleep(50)
+    time.sleep(60)
 if __name__ == "__main__":
     exit(main())
