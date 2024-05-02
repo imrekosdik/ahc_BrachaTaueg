@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from adhoccomputing.Generics import *
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
-from BrachaToueg.BrachaTouegImplementation.BrachaTouegDemo import BrachaTouegComponentModel, BrachaTouegEventTypes
+from BrachaToueg.BrachaTouegImplementation.BrachaToueg import BrachaTouegComponentModel, BrachaTouegEventTypes
 
 
 def create_undirected_ring():
@@ -40,8 +40,8 @@ def main():
     components = list(topology.nodes.values())
     time.sleep(10)
     components[0].send_request_to_component(components[1])
-    components[0].send_request_to_component(components[2])
     components[1].send_request_to_component(components[2])
+    components[2].send_request_to_component(components[0])
     time.sleep(10)
     components[0].send_self(Event(components[0], BrachaTouegEventTypes.DETECTDEADLOCK, eventcontent="Initiator"))   
     

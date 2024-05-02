@@ -4,9 +4,6 @@ from adhoccomputing.GenericModel import GenericModel, GenericMessageHeader, Gene
 from enum import Enum
 from adhoccomputing.Generics import *
 from adhoccomputing.Generics import Event
-from multiprocessing.pool import ThreadPool
-import threading
-import time
 
 class LaiYangEventTypes(Enum):
     TAKESNAPSHOT = "TAKESNAPSHOT" # event that triggers the Lai-Yang Snapshot Algorithm
@@ -14,14 +11,11 @@ class LaiYangEventTypes(Enum):
 
 class LaiYangMessageTypes(Enum):
     PRESNAPSHOT = "PRESNAPSHOT"
-
+    TERMINATED = "TERMINATED"
 
 class BrachaTouegEventTypes(Enum):
     DETECTDEADLOCK = "DETECTDEADLOCK" # event that triggers the Bracha-Toueg Deadlock Detection Algorithm
-    CHECKDONEMESSAGES = "CHECKDONEMESSAGES"
-    CHECKACKNOWLEDGEMESSAGES = "CHECKACKNOWLEDGEMESSAGES"
-    
-    
+
 class BrachaTouegMessageTypes(Enum):
     REQUEST = "REQUEST"
     NOTIFY = "NOFIFY"
@@ -29,71 +23,77 @@ class BrachaTouegMessageTypes(Enum):
     GRANT = "GRANT"
     ACKNOWLEDGE = "ACKNOWLEDGE"
 
-
 class SnapshotState():
-    def __init__(self, sent_requests, received_requests):
-        self.sent_requests = sent_requests
-        self.received_requests = received_requests
-        
+    def __init__(self, snapshot_recorded, counter, state, outgoing_channels, incoming_channels):
+        self.snapshot_recorded = snapshot_recorded
+        self.counter = counter
+        self.state = state
+        self.outgoing_channels = outgoing_channels
+        self.incoming_channels = incoming_channels
+
 
 class BrachaTouegComponentModel(GenericModel):
-    def __init__(self, componentname, componentinstancenumber, context=None, configurationparameters=None, num_worker_threads=1, topology=None, child_conn=None, node_queues=None, channel_queues=None):
+    def __init__(self, componentname, componentinstancenumber, context=None, configurationparameters=None, num_worker_threads=3, topology=None, child_conn=None, node_queues=None, channel_queues=None):
         super().__init__(componentname, componentinstancenumber, context, configurationparameters, num_worker_threads, topology, child_conn, node_queues, channel_queues)
-
-        self.eventhandlers[LaiYangEventTypes.TAKESNAPSHOT] = self.on_receiving_take_snapshot
-        self.eventhandlers[BrachaTouegEventTypes.DETECTDEADLOCK] = self.on_receiving_detect_deadlock
         
-        self.counter = dict() 
-        self.sent_requests = dict() # OUT - the nodes process sent a request that were not yet purged or granted (key: componentinstancenumber, value: count of sent requests)
-        self.received_requests = dict() # IN - the nodes the process has received a request from that that were not yet purged or granted 
-        self.component_states = dict() # key: componentinstancenumber, value: list of received requests from the 'key' component
-        self.snapshot_recorded = False # states whether the component has taken its local snapshot      
-        self.local_snapshot = None # stores the local snapshot of the component as SnapshotState
-        self.snapshot_terminated = False
+        # attributes related with Lai-Yang Snapshot Algorithm
+        self.eventhandlers[LaiYangEventTypes.TAKESNAPSHOT] = self.on_receiving_take_snapshot
+        self.snapshot_recorded = False # states whether the component has taken its local snapshot
+        self.counter = dict() # keys: componentinstancenumber - values: how many messages that the component sent to/received from the key component
+        self.state = dict() # keys: componentinstancenumber - values: messages received from incoming channels 
+        self.saved_snapshot_state = None
+        self.outgoing_channels = dict() # stores components that this component sent a request to
+        self.incoming_channels = dict() # stores components that this component received a request from
 
+        # attributes related with Bracha-Toueg Deadlock Detection Algorithm
+        self.eventhandlers[BrachaTouegEventTypes.DETECTDEADLOCK] = self.on_receiving_detect_deadlock
         self.deadlock_detection_initiator = False
         self.notified = False
-        self.number_of_requests = 0
         self.free = False
-        self.received_notify = []
-
+        self.number_of_requests = 0
+        self.number_of_received_ack_messages = 0
+        self.number_of_received_done_messages = 0
+    
 
     def on_receiving_detect_deadlock(self, eventobj: Event):
         '''
         This method triggers the Bracha-Toueg Deadlock Detection Algorithm
         by first taking a local snapshot of the component starting the algorithm.
-        '''
-        logger.info(f"{self.componentname}.{self.componentinstancenumber} starts the deadlock detection algorithm.")
+        ''' 
         self.deadlock_detection_initiator = True
         self.send_self(Event(self, LaiYangEventTypes.TAKESNAPSHOT, None))
     
-    
+
     def on_receiving_take_snapshot(self, eventobj: Event):
         '''
         This method triggers the Lai-Yang Snapshot Algorithm
         '''
-        logger.info(f"{self.componentname}.{self.componentinstancenumber} starts the Lai-Yang snapshot algorithm after starting the deadlock detection")
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} starts the Lai-Yang snapshot algorithm after starting the deadlock detection")
         self.take_snapshot()
     
-    
+
     def send_request_to_component(self, component):
         '''
-        This method sends a request to the component specified with its *component instance number*. The payload of this 
-        request contains the information of whether the process sending this request has taken a snapshot.
+        This method sends a request to the given component in the arguments, simulating 
+        that this process requires some resource/communication from the given component
+        *REQUEST is part of the basic algorithm and independent of the detection algorithm. 
         '''
-        if component not in self.counter.keys():
-            self.counter[component] = 0
-        logger.info(f"{self.componentname}.{self.componentinstancenumber} sent request to the {self.componentname}.{component}")
-        header = GenericMessageHeader(BrachaTouegMessageTypes.REQUEST, self.componentinstancenumber, component)
-        message = GenericMessage(header, GenericMessagePayload(self.snapshot_recorded))
-        if component not in self.sent_requests.keys():
-            self.sent_requests[component] = []
-        self.sent_requests[component].append(Event(self, EventTypes.MFRT, message))
+        instance_number = component.componentinstancenumber
         self.number_of_requests += 1
+        if instance_number not in self.outgoing_channels:
+            self.outgoing_channels[instance_number] = 0
+        self.outgoing_channels[instance_number] += 1
+        # send the request to the component - simulates a communication request
+        # payload appends the information of whether this process has taken a local snapshot to the REQUEST message
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} sent request to the {self.componentname}.{instance_number}")
+        message = self.generate_message(BrachaTouegMessageTypes.REQUEST, self.componentinstancenumber, instance_number, self.snapshot_recorded)
         self.send_down(Event(self, EventTypes.MFRT, message))
-        if not self.snapshot_recorded:
-            self.counter[component] += 1
-            
+        # if the component previously did not send any messages to the given component
+        if instance_number not in self.counter.keys(): 
+            self.counter[instance_number] = 0            
+        if not self.snapshot_recorded: # as long as the process did not take its local snapshot
+            self.counter[instance_number] += 1 
+    
     
     def on_receiving_request_from_component(self, eventobj: Event):
         '''
@@ -101,31 +101,26 @@ class BrachaTouegComponentModel(GenericModel):
         the request. If process sending this request has already taken the snapshot, this process also takes it. If this process
         took its snapshot then, it proceeds to check the condition for termination
         '''
-        logger.info(f"{self.componentname}.{self.componentinstancenumber} received a request from {self.componentname}.{eventobj.eventcontent.header.messagefrom}.")
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} received a request from {self.componentname}.{eventobj.eventcontent.header.messagefrom}.")
         sending_process = eventobj.eventcontent.header.messagefrom
-        if sending_process not in self.received_requests.keys():
-            self.received_requests[sending_process] = []
-        self.received_requests[sending_process].append(eventobj)
+        if sending_process not in self.state.keys():
+                self.state[sending_process] = []
+        if sending_process not in self.incoming_channels:
+            self.incoming_channels[sending_process] = 0
+        self.incoming_channels[sending_process] += 1
         is_snapshot_recorded = eventobj.eventcontent.payload.messagepayload
         if is_snapshot_recorded: # process sending the request took the snapshot 
-            logger.info(f"{self.componentname}.{self.componentinstancenumber} starts to take snapshot because {self.componentname}.{eventobj.eventcontent.header.messagefrom} took its local snapshot before.")
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} starts to take its local snapshot.")
             self.take_snapshot()
         else:
-            if sending_process not in self.counter.keys():
-                self.counter[sending_process] = 0
-            self.counter[sending_process] -= 1
+            if sending_process not in self.counter.keys(): 
+                self.counter[sending_process] = 0  
+            self.counter[sending_process] -= 1 
             if self.snapshot_recorded: # process receiving the request took the snapshot
-                sending_process = eventobj.eventcontent.header.messagefrom
-                if sending_process not in self.component_states.keys():
-                    self.component_states[sending_process] = []
-                self.component_states[sending_process].append(eventobj) # append the request to the sending process's state
-                is_termination = True # denotes the termination condition
-                for component in self.component_states:
-                    if len(self.component_states[component]) + 1 != self.counter[component]:
-                        is_termination = False
-                        break
-                if is_termination and not self.snapshot_terminated:
-                    logger.info(f"{self.componentname}.{self.componentinstancenumber} terminates the snapshot algorithm.")
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} already took its snapshot, checking for termination condition")
+                self.state[sending_process].append(eventobj) # append the request to the sending process's state
+                logger.critical(f"state of {self.componentinstancenumber} = {self.state}")
+                if self.check_termination_condition():
                     self.terminate_snapshot()
     
     
@@ -135,21 +130,15 @@ class BrachaTouegComponentModel(GenericModel):
         After that, if the termination condition is satisfied, the component terminates the snapshot algorithm.
         ''' 
         messagefrom = eventobj.eventcontent.header.messagefrom
-        logger.info(f"{self.componentname}.{self.componentinstancenumber} received presnapshot from {messagefrom}")
-        if messagefrom not in self.counter.keys():
-            self.counter[messagefrom] = 0
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} received presnapshot from {messagefrom}")
+        if messagefrom not in self.counter.keys(): 
+            self.counter[messagefrom] = 0  
         self.counter[messagefrom] += int(eventobj.eventcontent.payload.messagepayload)
         self.take_snapshot()
-        is_termination = True
-        for component in self.component_states:
-            if len(self.component_states[component]) + 1 != self.counter[component]:
-                is_termination = False
-                break
-        if is_termination and not self.snapshot_terminated:
-            logger.info(f"{self.componentname}.{self.componentinstancenumber} terminates the snapshot algorithm.")
+        if self.check_termination_condition():
             self.terminate_snapshot()
     
-    
+
     def on_message_from_bottom(self, eventobj: Event):
         '''
         This function processes the message from top events by calling related
@@ -169,71 +158,97 @@ class BrachaTouegComponentModel(GenericModel):
                 self.on_receiving_done(eventobj)
             elif messagetype == BrachaTouegMessageTypes.GRANT:
                 self.on_receiving_grant(eventobj)
-  
-        
+            elif messagetype == LaiYangMessageTypes.TERMINATED:
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} starts the deadlock detection algorithm.")
+                time.sleep(20)
+                self.notify()   
+    
+
     def take_snapshot(self):
         '''
         This method takes a local snapshot of the component after sending presnapshot messages to all its outgoing 
-        channels by storing the received and sent messages.
+        channels by storing *self.incoming_channels*, *self.outgoing_channels*, *self.state* and *self.counter*.
         '''
         if not self.snapshot_recorded:
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} sends presnapshot message to its outgoing channels.")
             self.snapshot_recorded = True
-            logger.info(f"{self.componentname}.{self.componentinstancenumber} sends presnapshot message to its outgoing channels.")
-            self.send_presnapshot()
-            self.local_snapshot = SnapshotState(self.sent_requests, self.received_requests)
-            logger.info(f"{self.componentname}.{self.componentinstancenumber} local snapshot is saved")
+            for channel in self.outgoing_channels:
+                message = self.generate_message(LaiYangMessageTypes.PRESNAPSHOT, self.componentinstancenumber, channel, self.counter[channel] + 1)
+                self.send_down(Event(self, EventTypes.MFRT, message))
+            for channel in self.incoming_channels:
+                message = self.generate_message(LaiYangMessageTypes.PRESNAPSHOT, self.componentinstancenumber, channel, self.counter[channel] + 1)
+                self.send_down(Event(self, EventTypes.MFRT, message))
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} local snapshot is saved")
+            self.saved_snapshot_state = SnapshotState(self.snapshot_recorded, self.counter, self.state, self.outgoing_channels, self.incoming_channels)
     
-    
-    def send_presnapshot(self):
-        '''
-        This method sends the presnap control message to the component's all 
-        outgoing channel. The payload of the message contains the number of messages
-        that the component sent to each of the channels.
-        '''
-        for component in self.counter:
-            logger.info(f"sending presnaphot to {component}")
-            header = GenericMessageHeader(LaiYangMessageTypes.PRESNAPSHOT, self.componentinstancenumber, component)
-            payload = GenericMessagePayload(self.counter[component] + 1)
-            self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, payload), None))
-    
-    
+
     def terminate_snapshot(self):
         '''
         This method notifies the component by calling the deadlock detection algorithm
         to proceed with since the WFG is computed.
         '''
-        logger.info(f"Lai-Yang Snapshot Algorithm terminated for {self.componentname}.{self.componentinstancenumber}")
-        self.snapshot_terminated = True
+        logger.critical(f"Lai-Yang Snapshot Algorithm terminated for {self.componentname}.{self.componentinstancenumber}")
         if self.deadlock_detection_initiator:
-            time.sleep(10)
-            logger.critical(f"{self.componentname}.{self.componentinstancenumber} starts detecting deadlocks")
-            self.notify()   
+            self.notify() 
 
+
+    def check_termination_condition(self):
+        '''
+        This function compares the number of incoming and outgoing messages of a given component 
+        with its incoming message set length and reaches a conclusion about the algorithm termination
+        '''
+        termination_condition = True
+        for channel in self.incoming_channels:
+            if len(self.state[channel]) + 1 != self.counter[channel]:
+                termination_condition = False
+                break
+        return termination_condition
+    
+    
+    def generate_message(self, messagetype, messagefrom, messageto, payload):
+        '''
+        This function generates a GenericMessage object given the type of the message,
+        the payload of the message and the message source and destination
+        '''
+        header = GenericMessageHeader(messagetype, messagefrom, messageto)
+        return GenericMessage(header, GenericMessagePayload(payload))
+    
 
     def notify(self):
         self.notified = True
-        for component in self.sent_requests:
+        for component in self.outgoing_channels:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} sent NOTIFY to {self.componentname}.{component}")
-            logger.critical(f"{self.componentname}.{self.componentinstancenumber} awaiting DONE from {self.componentname}.{component}")
             header = GenericMessageHeader(BrachaTouegMessageTypes.NOTIFY, self.componentinstancenumber, component)
             self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), component))
-        if self.number_of_requests == 0:
+        if self.number_of_requests == 0: # grant if the process does not wait for any resources
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} calls GRANT method")
             self.grant()
         
-       
+        while (self.number_of_received_done_messages != len(self.outgoing_channels)):
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} awaiting DONE from {self.outgoing_channels}")
+            time.sleep(0.1)
+        
+        if self.deadlock_detection_initiator:
+            if self.free:
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is not deadlocked.")
+            else:
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is deadlocked.")
+
+
     def grant(self):
         self.free = True
-        for component in self.received_requests:
+        for component in self.incoming_channels:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} sent GRANT to {self.componentname}.{component}")
-            logger.critical(f"{self.componentname}.{self.componentinstancenumber} awaiting ACKNOWLEDGE {self.componentname}.{component}")
             header = GenericMessageHeader(BrachaTouegMessageTypes.GRANT, self.componentinstancenumber, component)
             self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), component))
+        
+        while (self.number_of_received_ack_messages != len(self.incoming_channels)):
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} awaiting ACKNOWLEDGE from {self.incoming_channels}")
+            time.sleep(0.1)
 
 
     def on_receiving_notify(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
-        self.received_notify.append(messagefrom)
         logger.critical(f"{self.componentname}.{self.componentinstancenumber} received notify from {self.componentname}.{messagefrom}")
         if not self.notified:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} calls notify")
@@ -260,20 +275,14 @@ class BrachaTouegComponentModel(GenericModel):
 
     def on_receiving_acknowledge(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
-        if messagefrom in self.received_requests:
+        if messagefrom in self.incoming_channels:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} received ACKNOWLEDGE from {self.componentname}.{messagefrom}")
-            self.received_requests[messagefrom] = None
+            self.number_of_received_ack_messages += 1
 
       
     def on_receiving_done(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
-        if messagefrom in self.sent_requests:
+        if messagefrom in self.outgoing_channels:
             logger.critical(f"{self.componentname}.{self.componentinstancenumber} received DONE from {self.componentname}.{messagefrom}")
-            self.sent_requests[messagefrom] = None
-
-        if all(value is None for value in self.sent_requests.values()):
-            if self.deadlock_detection_initiator:
-                if not self.free:
-                    logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is deadlocked.")
-                else:
-                    logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is not deadlocked.")
+            self.number_of_received_done_messages += 1
+    
