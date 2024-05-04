@@ -202,6 +202,12 @@ class BrachaTouegComponentModel(GenericModel):
     
 
     def notify(self):
+        '''
+        Process sends notify to all its outgoing messages and if it does not wait for
+        any resources, it starts granting the resources. After receiving DONE messages
+        from its outgoing channels, it checks the value of free and decides whether it
+        is deadlocked.
+        '''
         self.notified = True
         for component in self.outgoing_channels:
             header = GenericMessageHeader(BrachaTouegMessageTypes.NOTIFY, self.componentinstancenumber, component)
@@ -209,6 +215,7 @@ class BrachaTouegComponentModel(GenericModel):
         if self.number_of_requests == 0: # grant if the process does not wait for any resources
             self.grant()
         
+        # stop execution until the component received DONE message from all of its outgoing channels
         while (self.number_of_received_done_messages != len(self.outgoing_channels)):
             time.sleep(0.1)
         
@@ -218,18 +225,28 @@ class BrachaTouegComponentModel(GenericModel):
             else:
                 logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is deadlocked.")
 
-
+    
     def grant(self):
+        '''
+        Process that is able to grant resource to its incoming channels becomes a free process and
+        waits for ACKNOWLEDGE message from its incoming channels before proceeding.
+        '''
         self.free = True
         for component in self.incoming_channels:
             header = GenericMessageHeader(BrachaTouegMessageTypes.GRANT, self.componentinstancenumber, component)
             self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), component))
         
+        # stop execution until the component received ACKNOWLEDGE message from all of its incoming channels
         while (self.number_of_received_ack_messages != len(self.incoming_channels)):
             time.sleep(0.1)
 
 
     def on_receiving_notify(self, eventobj: Event):
+        '''
+        Process receiving the notify message notifies its outgoing components
+        if it is not notified earlier. After that it sends DONE message to the
+        process sending the notify message.
+        '''
         messagefrom = eventobj.eventcontent.header.messagefrom
         if not self.notified:
             self.notify()
@@ -238,6 +255,11 @@ class BrachaTouegComponentModel(GenericModel):
   
 
     def on_receiving_grant(self, eventobj: Event):
+        '''
+        Process receiving the grant message grants resources to its incoming channels
+        if it does not wait for any resources. After that, it sends ACKNOWLEDGE message
+        to the process granting the resource to it.
+        '''
         messagefrom = eventobj.eventcontent.header.messagefrom
         if self.number_of_requests > 0:
             self.number_of_requests -= 1
