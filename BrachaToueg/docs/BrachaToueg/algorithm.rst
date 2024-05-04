@@ -17,7 +17,7 @@ Deadlock detection is a fundamental problem in distributed computing, which requ
 
 Bracha-Toueg Deadlock Detection Algorithm: |BrachaTouegAlg| 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, proposed by Gabriel Bracha and Sam Toueg [Bracha1987]_, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
+The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, proposed by Gabriel Bracha and Sam Toueg [Bracha1987]_, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
 
 **OUTv**: The set of nodes *u* for which *v*'s request has not been granted or relinquished. 
 **INv**: The set of nodes requesting a service from *v*, according to *v*’s point of view. The node *v* received requests from a set of nodes, but *v* has not yet granted or dismissed the requests. 
@@ -71,14 +71,13 @@ After computing each set of nodes, the algorithm consists of two phases. *Notify
 
 Lai-Yang Snapshot Algorithm:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, utilizes :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` to compute the WFG graph. Therefore, the process starting the
-deadlock detection algorithm first executes the Lai-Yang snapshot algorithm. 
+The :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, utilizes :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` to compute the WFG graph. Therefore, the process starting the deadlock detection algorithm first executes the Lai-Yang snapshot algorithm. The deadlock detection algorithm uses the global state information captured with :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` to detect deadlocks. Since this paper focuses on implementing the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, we do no explicitly explain the pseudocode given for :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` below. We give the pseudocode here since we implemented the algorithm as a part of  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`. 
 
 .. _LaiYangSnapshotAlgorithm:
 
 .. code-block:: RST
     :linenos:
-    :caption: Lai-Yang Snapshot Algorithm [Fokking2013]_.
+    :caption: Lai-Yang Snapshot Algorithm [Fokking2013]_
     
     1   bool recorded
     2   nat counter[c] for all channels c of p
@@ -119,17 +118,16 @@ deadlock detection algorithm first executes the Lai-Yang snapshot algorithm.
     32  take a local snapshot state of p
     33  end if 
 
- 
 Example
 ~~~~~~~~
 
 .. list-table:: 
 
-    * - .. figure:: figures/bracha_example_step1.jpg
+    * - .. figure:: figures/brachaToueg_step1.png
 
            Fig 1. Step 1
 
-      - .. figure:: figures/bracha_example_step2.jpeg
+      - .. figure:: figures/brachaToueg_step2.png
 
            Fig 2. Step 2
 
@@ -160,4 +158,3 @@ Complexity
 .. [Kshemkalyani2008] Ajay D. Kshemkalyani, Mukesh Singhal, Distributed Computing: Principles, Algorithms and Systems, Cambridge Univeristy Press, New York, USA, 2008 
 .. [Kshemkalyani1994] A. D. Kshemkalyani and M. Singhal, "Efficient detection and resolution of generalized distributed deadlocks," in IEEE Transactions on Software Engineering, vol. 20, no. 1, pp. 43-54, Jan. 1994,
 .. [Knapp1987] E. Knapp, "Deadlock Detection in Distributed Databases", ACM Computing Surveys, Volume 19, Issue 4, pp 303-328, 1987
-.. [Chandy1985] Chandy, K. M., and Lamport, L. 1985. Distributed snapshots: Determining global states of distributed systems. ACM Trans. Program. Lang. Syst. 3, 1 (Feb.), 63-75.
