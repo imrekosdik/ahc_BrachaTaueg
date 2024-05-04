@@ -15,6 +15,7 @@ class ShavitFrancezMessageTypes(Enum):
     ACKNOWLEDGE = "ACKNOWLEDGE"
     BASICMESSAGE = "BASICMESSAGE"
     WAVE = "WAVE"
+    NOTIFYPROCESSES = "NOTIFYPROCESSES"
 
 
 class ShavitFrancezComponentModel(GenericModel):
@@ -43,8 +44,6 @@ class ShavitFrancezComponentModel(GenericModel):
     def on_receiving_send_basic_message(self, eventobj):
         if self.is_active:
             self.send_basic_message()
-        else:
-            logger.error("The process is not active, it cannot send any messages.")
    
     
     def on_receiving_detect_termination(self, eventobj):
@@ -53,9 +52,12 @@ class ShavitFrancezComponentModel(GenericModel):
         active and sets its parent to itself. Then it makes the process send
         basic messages to all of its neighbors.
         '''
+        logger.critical(f"Initiator {self.componentname}.{self.componentinstancenumber} started termination detection algorithm by sending basic messages to its neighbors")
         if not self.is_active:
             self.is_active = True
         self.termination_parent = self.componentinstancenumber
+        self.termination_initiators.append(self.componentinstancenumber)
+        self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.NOTIFYPROCESSES, self.componentinstancenumber)))
 
 
     def on_receiving_basic_message(self, eventobj: Event):
@@ -103,6 +105,8 @@ class ShavitFrancezComponentModel(GenericModel):
                 self.on_receiving_basic_message(eventobj)
             elif message == ShavitFrancezMessageTypes.WAVE:
                 self.on_receiving_start_wave(eventobj)
+            elif message == ShavitFrancezMessageTypes.NOTIFYPROCESSES:
+                self.termination_initiators.append(eventobj.eventcontent.header.messagefrom)
     
     
     def send_basic_message(self):
@@ -127,6 +131,7 @@ class ShavitFrancezComponentModel(GenericModel):
         header = GenericMessageHeader(ShavitFrancezMessageTypes.WAVE, self.componentinstancenumber, None)
         payload = GenericMessagePayload(self.componentinstancenumber)
         message = GenericMessage(header, payload)
+        self.send_down(Event(self, EventTypes.MFRT, message, None))
 
 
     def on_receiving_start_wave(self, eventobj: Event):
@@ -172,8 +177,10 @@ class ShavitFrancezComponentModel(GenericModel):
 
 
     def decide(self):
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} decided and calls Announce.")
         self.announce()
     
 
     def announce(self):
         logger.critical(f"{self.componentname}.{self.componentinstancenumber} announces Termination.")
+

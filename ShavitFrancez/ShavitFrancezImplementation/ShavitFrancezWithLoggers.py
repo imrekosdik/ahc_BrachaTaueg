@@ -15,6 +15,7 @@ class ShavitFrancezMessageTypes(Enum):
     ACKNOWLEDGE = "ACKNOWLEDGE"
     BASICMESSAGE = "BASICMESSAGE"
     WAVE = "WAVE"
+    NOTIFYPROCESSES = "NOTIFYPROCESSES"
 
 
 class ShavitFrancezComponentModel(GenericModel):
@@ -44,8 +45,6 @@ class ShavitFrancezComponentModel(GenericModel):
     def on_receiving_send_basic_message(self, eventobj):
         if self.is_active:
             self.send_basic_message()
-        else:
-            logger.error("The process is not active, it cannot send any messages.")
    
     
     def on_receiving_detect_termination(self, eventobj):
@@ -58,6 +57,8 @@ class ShavitFrancezComponentModel(GenericModel):
         if not self.is_active:
             self.is_active = True
         self.termination_parent = self.componentinstancenumber
+        self.termination_initiators.append(self.componentinstancenumber)
+        self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.NOTIFYPROCESSES, self.componentinstancenumber)))
 
 
     def on_receiving_basic_message(self, eventobj: Event):
@@ -113,6 +114,8 @@ class ShavitFrancezComponentModel(GenericModel):
                     self.on_receiving_basic_message(eventobj)
                 elif message == ShavitFrancezMessageTypes.WAVE:
                     self.on_receiving_start_wave(eventobj)
+                elif message == ShavitFrancezMessageTypes.NOTIFYPROCESSES:
+                    self.termination_initiators.append(eventobj.eventcontent.header.messagefrom)
             else:
                 logger.critical("basic message discarded because it is not meant to be sent to the process")
         except:

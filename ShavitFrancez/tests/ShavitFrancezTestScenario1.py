@@ -35,8 +35,6 @@ def main():
     topology.start()
     time.sleep(10)
     components = list(topology.nodes.values())
-    components[0].termination_initiators.append(components[0].componentinstancenumber)
-    components[1].termination_initiators.append(components[0].componentinstancenumber)
     components[0].send_self(Event(components[0], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))   
     components[0].send_self(Event(components[0], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))
     components[1].send_self(Event(components[1], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))
