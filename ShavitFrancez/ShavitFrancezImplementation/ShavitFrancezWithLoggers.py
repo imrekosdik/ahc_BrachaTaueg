@@ -36,6 +36,7 @@ class ShavitFrancezComponentModel(GenericModel):
 
 
     def on_init(self, eventobj):
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} is initialized")
         for neighbor in self.topology.G.neighbors(self.componentinstancenumber):
             self.neighbors.append(neighbor)
 
@@ -53,6 +54,7 @@ class ShavitFrancezComponentModel(GenericModel):
         active and sets its parent to itself. Then it makes the process send
         basic messages to all of its neighbors.
         '''
+        logger.critical(f"Initiator {self.componentname}.{self.componentinstancenumber} started termination detection algorithm by sending basic messages to its neighbors")
         if not self.is_active:
             self.is_active = True
         self.termination_parent = self.componentinstancenumber
@@ -65,9 +67,12 @@ class ShavitFrancezComponentModel(GenericModel):
         acknowledge message to the process sending the basic message.
         '''
         if not self.is_active:
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} received a basic message from {eventobj.eventsource_componentname}.{eventobj.eventsource_componentinstancenumber} making its parent {eventobj.eventsource_componentname}.{eventobj.eventsource_componentinstancenumber}")
             self.is_active = True
             self.termination_parent = eventobj.eventsource_componentinstancenumber
         else:
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} received a basic message from {eventobj.eventsource_componentname}.{eventobj.eventsource_componentinstancenumber}")
+            logger.critical(f"{self.componentname}.{self.componentinstancenumber} sends acknowledge to {eventobj.eventsource_componentname}.{eventobj.eventsource_componentinstancenumber}")
             self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.ACKNOWLEDGE, eventobj.eventsource_componentinstancenumber)))
 
 
@@ -76,7 +81,9 @@ class ShavitFrancezComponentModel(GenericModel):
         This method decreases the number of children of the process receiving 
         the acknowledge message by one and calls the leave tree procedure for it.
         '''
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} received acknowledge from {eventobj.eventsource_componentname}.{eventobj.eventsource_componentinstancenumber}")
         self.number_of_children -= 1
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} calls the Leave Tree procedure.")
         self.leave_tree()  
 
 
@@ -85,8 +92,10 @@ class ShavitFrancezComponentModel(GenericModel):
         The process receiving the BECOMEPASSIVE event transitions to passive
         state if not already passive, and calls the leave tree procedure.
         '''
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} became passive")
         if self.is_active:
             self.is_active = False
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} calls leave tree on becoming passive")
         self.leave_tree()
 
 
@@ -95,14 +104,19 @@ class ShavitFrancezComponentModel(GenericModel):
         This method calls the related methods according to the message type of
         the MFRT event.
         '''
-        if self.componentinstancenumber == eventobj.eventcontent.header.messageto or eventobj.eventcontent.header.messageto == None:
-            message = eventobj.eventcontent.header.messagetype 
-            if message == ShavitFrancezMessageTypes.ACKNOWLEDGE:
-                self.on_receiving_acknowledge_message(eventobj)
-            elif message == ShavitFrancezMessageTypes.BASICMESSAGE:
-                self.on_receiving_basic_message(eventobj)
-            elif message == ShavitFrancezMessageTypes.WAVE:
-                self.on_receiving_start_wave(eventobj)
+        try:
+            if self.componentinstancenumber == eventobj.eventcontent.header.messageto or eventobj.eventcontent.header.messageto == None:
+                message = eventobj.eventcontent.header.messagetype 
+                if message == ShavitFrancezMessageTypes.ACKNOWLEDGE:
+                    self.on_receiving_acknowledge_message(eventobj)
+                elif message == ShavitFrancezMessageTypes.BASICMESSAGE:
+                    self.on_receiving_basic_message(eventobj)
+                elif message == ShavitFrancezMessageTypes.WAVE:
+                    self.on_receiving_start_wave(eventobj)
+            else:
+                logger.critical("basic message discarded because it is not meant to be sent to the process")
+        except:
+            AttributeError("Error")
     
     
     def send_basic_message(self):
@@ -123,10 +137,12 @@ class ShavitFrancezComponentModel(GenericModel):
         '''
         This method sends wave messages to the process' all its neighbors
         '''
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} sends wave messages to all of its neighbors")
         self.wave_initiators.append(self.componentinstancenumber)
         header = GenericMessageHeader(ShavitFrancezMessageTypes.WAVE, self.componentinstancenumber, None)
         payload = GenericMessagePayload(self.componentinstancenumber)
         message = GenericMessage(header, payload)
+        self.send_down(Event(self, EventTypes.MFRT, message, None))
 
 
     def on_receiving_start_wave(self, eventobj: Event):
@@ -164,14 +180,18 @@ class ShavitFrancezComponentModel(GenericModel):
         starts a wave.
         '''
         if not self.is_active and self.number_of_children == 0:
+            logger.critical(f"Leave tree procedure started for {self.componentname}.{self.componentinstancenumber}")
             if self.termination_parent is not None and self.termination_parent is not self.componentinstancenumber:
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} leaves its parent")
                 self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.ACKNOWLEDGE, self.termination_parent)))
                 self.termination_parent = None 
             else:
+                logger.critical(f"{self.componentname}.{self.componentinstancenumber} do not have parent, starts a wave")
                 self.send_wave_message()
 
 
     def decide(self):
+        logger.critical(f"{self.componentname}.{self.componentinstancenumber} decided and calls Announce.")
         self.announce()
     
 
