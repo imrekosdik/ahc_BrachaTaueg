@@ -24,12 +24,13 @@ The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetecti
 
 After computing each set of nodes, the algorithm consists of two phases. *Notify* - where processes are notified that the algorithm started execution - and *Grant* in which active processes simulate the granting of requests. 
 
-1. The process initiating the deadlock detection algorithm sends NOTIFY messages to all processes in *Outv*. (Line 2)
-2. If the initiator process does not need any resources, it grants its resources to processes needing them by sending *GRANT* messages (Line 19) and makes itself free. (Line 18) It then waits for *ACKNOWLEDGE* messages from these processes indicating that they received the *GRANT* message.(Line 20)
-3. After performing the *GRANT* operation, it waits *DONE* messages from the processes it sent *NOTIFY* message to. (Line 7)
-4. If a process receives *NOTIFY* from another for the first time, it sends NOTIFY messages to all processes in its *Outv*. (Line 14). Then, it sends *DONE* message to the process sending the *NOTIFY* message. (Line 16)
-5. If a process receives *GRANT* message from another, it checks whether it needs additional resources to continue execution. (Line 22). Once it does not need any resources, it grants its resources to waiting processes by executing grant. (Line 25) After that, it sends *ACKNOWLEDGE* message to the process sending the *GRANT* message. (Line 28)
-6. Once the initiator process receives done from all processes in *Outv*,(Line 7) it checks the value of *free* and decides whether it is deadlocked. (Line 9)
+-  The process initiating the deadlock detection algorithm sends NOTIFY messages to all processes in *Outv*. (Line 2)
+-  If the initiator process does not need any resources, it grants its resources to processes needing them by sending *GRANT* messages (Line 19) and makes itself free. (Line 18) It then waits for *ACKNOWLEDGE* messages from these processes indicating that they received the *GRANT* message.(Line 20)
+-  After performing the *GRANT* operation, it waits *DONE* messages from the processes it sent *NOTIFY* message to. (Line 7)
+-  If a process receives *NOTIFY* from another for the first time, it sends NOTIFY messages to all processes in its *Outv*. (Line 14). Then, it sends *DONE* message to the process sending the *NOTIFY* message. (Line 16)
+-  If a process receives *GRANT* message from another, it checks whether it needs additional resources to continue execution. (Line 22). Once it does not need any resources, it grants its resources to waiting processes by executing grant. (Line 25) After that, it sends *ACKNOWLEDGE* message to the process sending the *GRANT* message. (Line 28)
+-  Once the initiator process receives done from all processes in *Outv*,(Line 7) it checks the value of *free* and decides whether it is deadlocked. (Line 9)
+
 
 .. _BrachaTouegDeadlockDetectionAlgorithm:
 
@@ -124,11 +125,11 @@ Example With Deadlock Present in The System
 
 .. list-table:: 
 
-    * - .. figure:: figures/brachaToueg_step1.png
+    * - .. figure:: figures/brachaToueg_Ex1_step1.png
 
            Fig 1. Step 1
 
-      - .. figure:: figures/brachaToueg_step2.png
+      - .. figure:: figures/brachaToueg_Ex1_step2.png
 
            Fig 2. Step 2
 
@@ -142,6 +143,7 @@ The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTo
 5. R sends <**done**> to Q because R is already notified. (See Figure 2)
 6. Q sends <**done**> to P because Q is already notified. (See Figure 2)
 7. Once P receives <**done**> from all its OUT, consisting of Q, it checks the *free<A>*, and since *free<P>* is false, it concludes that the resources are never granted and it is deadlocked. 
+
 
 Example With Deadlock Not Present in The System
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,11 +179,10 @@ The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTo
 8. Q receives <**ack**> from P, it sends <**done**> to P. (See Figure 6) 
 9. P receives <**done**> from Q and R, checks the value of *free<P>* and concludes that it is not deadlocked.
 
- 
 Correctness
 ~~~~~~~~~~~
+Deadlock is detected if and only if the initiator node belongs to a cycle of the WFG. Every process forwards the message to each of its successors in the WFG. Therefore, in a bounded number of steps, the initiator process i receives the message and detects that it is deadlocked. If the initiator does not belong to the cycle, then it will never receive its own message, so deadlock will not be detected. [Ghosh2015]_  
 
- 
 Complexity 
 ~~~~~~~~~~
 1. **Time Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has time complexity of 4 * d hops, where d is the diameter of a given WFG. [Kshemkalyani1994]_
@@ -189,7 +190,8 @@ Complexity
 
 
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
-.. [Bracha1987] G. Bracha and S. Toeug, "Distributed Deadlock detection". Distributed Comput., vol. 2, pp. 127-138, 1987.
+.. [Bracha1987] G. Bracha and S. Toeug, "Distributed Deadlock detection". Distributed Comput., vol. 2, pp. 127-138, 1987
 .. [Kshemkalyani2008] Ajay D. Kshemkalyani, Mukesh Singhal, Distributed Computing: Principles, Algorithms and Systems, Cambridge Univeristy Press, New York, USA, 2008 
 .. [Kshemkalyani1994] A. D. Kshemkalyani and M. Singhal, "Efficient detection and resolution of generalized distributed deadlocks," in IEEE Transactions on Software Engineering, vol. 20, no. 1, pp. 43-54, Jan. 1994,
 .. [Knapp1987] E. Knapp, "Deadlock Detection in Distributed Databases", ACM Computing Surveys, Volume 19, Issue 4, pp 303-328, 1987
+.. [Ghosh2015] S. Ghosh, "Distributed Systems: An Algorithmic Approach, 2nd Edition", CRC Press pp. 184, 2015
