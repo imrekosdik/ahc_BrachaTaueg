@@ -11,7 +11,6 @@ class LaiYangEventTypes(Enum):
 
 class LaiYangMessageTypes(Enum):
     PRESNAPSHOT = "PRESNAPSHOT"
-    TERMINATED = "TERMINATED"
 
 class BrachaTouegEventTypes(Enum):
     DETECTDEADLOCK = "DETECTDEADLOCK" # event that triggers the Bracha-Toueg Deadlock Detection Algorithm
