@@ -150,19 +150,19 @@ Example With Deadlock Not Present in The System
 
     * - .. figure:: figures/brachaToueg_Ex2_step1.png
 
-           Fig 1. Step 1
+           Fig 3. Step 1
 
-      - .. figure:: figures/brachaToueg_Ex2_ste2.png
+      - .. figure:: figures/brachaToueg_Ex2_step2.png
 
-           Fig 2. Step 2
+           Fig 4. Step 2
            
     *  - .. figure:: figures/brachaToueg_Ex2_step3.png
 
-           Fig 2. Step 3
+           Fig 5. Step 3
       
       - .. figure:: figures/brachaToueg_Ex2_step4.png
 
-           Fig 2. Step 4
+           Fig 6. Step 4
 
 Assume a system with three processes, P, Q and R. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<P>* = 2, *requests<Q>* = 1 and *requests<R>* = 0. 
 The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
