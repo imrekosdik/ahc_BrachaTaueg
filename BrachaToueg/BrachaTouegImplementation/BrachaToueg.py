@@ -208,7 +208,7 @@ class BrachaTouegComponentModel(GenericModel):
         is deadlocked.
         '''
         self.notified = True
-        for component in self.outgoing_channels:
+        for component in self.saved_snapshot_state.outgoing_channels:
             header = GenericMessageHeader(BrachaTouegMessageTypes.NOTIFY, self.componentinstancenumber, component)
             self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), component))
         if self.number_of_requests == 0: # grant if the process does not wait for any resources
@@ -231,12 +231,12 @@ class BrachaTouegComponentModel(GenericModel):
         waits for ACKNOWLEDGE message from its incoming channels before proceeding.
         '''
         self.free = True
-        for component in self.incoming_channels:
+        for component in self.saved_snapshot_state.incoming_channels:
             header = GenericMessageHeader(BrachaTouegMessageTypes.GRANT, self.componentinstancenumber, component)
             self.send_down(Event(self, EventTypes.MFRT, GenericMessage(header, None), component))
         
         # stop execution until the component received ACKNOWLEDGE message from all of its incoming channels
-        while (self.number_of_received_ack_messages != len(self.incoming_channels)):
+        while (self.number_of_received_ack_messages != len(self.saved_snapshot_state.incoming_channels)):
             time.sleep(0.1)
 
 
@@ -270,12 +270,12 @@ class BrachaTouegComponentModel(GenericModel):
 
     def on_receiving_acknowledge(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
-        if messagefrom in self.incoming_channels:
+        if messagefrom in self.saved_snapshot_state.incoming_channels:
             self.number_of_received_ack_messages += 1
 
       
     def on_receiving_done(self, eventobj: Event):
         messagefrom = eventobj.eventcontent.header.messagefrom
-        if messagefrom in self.outgoing_channels:
+        if messagefrom in self.saved_snapshot_state.outgoing_channels:
             self.number_of_received_done_messages += 1
     
