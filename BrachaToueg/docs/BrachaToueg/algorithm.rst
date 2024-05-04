@@ -168,10 +168,10 @@ Assume a system with three processes, P, Q and R. The wait-for graph consists of
 The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
 
 1. The initiator P, sets *notified<P>* to true and sends <**notify**> to Q and R. A awaits <**done**> from Q and R. (See Figure 3) 
-2. Q receives <**notify**> from P and sets *notified<Q>* to true. In order to send <**done**> to P, Q sends <**nofity**> to R and awaits <**done**> from R. (See Figure 4) 
-3. R receives <**notify**> from Q and P and sets *notified<R>* to true. Since requests<R> = 0. It sends <**grant**> to P and R and awaits <**ack**> from them. (See Figure 5) 
-4. P receives <**grant**> from Q and sets *requests<P>* to 1. P sends <**ack**> to Q. (See Figure 6) 
-5. Q receives <**grant**> from R and sets *requests<Q>* to 0. It first sends <**ack**> to R, and then sends <**grant**> to P. (See Figure 6) 
+2. Q receives <**notify**> from P and sets *notified<Q>* to true. In order to send <**done**> to P, Q sends <**nofity**> to R and awaits <**done**> from R. (See Figure 3) 
+3. R receives <**notify**> from Q and P and sets *notified<R>* to true. Since requests<R> = 0. It sends <**grant**> to P and R and awaits <**ack**> from them. (See Figure 4) 
+4. P receives <**grant**> from Q and sets *requests<P>* to 1. P sends <**ack**> to Q. (See Figure 4) 
+5. Q receives <**grant**> from R and sets *requests<Q>* to 0. It first sends <**ack**> to R, and then sends <**grant**> to P. (See Figure 5) 
 6. P receives <**grant**> from Q and sets *requests<P>* to 0. It sends <**ack**> to Q. (See Figure 6) 
 7. R receives <**ack**> from Q and P, it sends <**done**> to P. (See Figure 6) 
 8. Q receives <**ack**> from P, it sends <**done**> to P. (See Figure 6) 
