@@ -19,8 +19,8 @@ Bracha-Toueg Deadlock Detection Algorithm: |BrachaTouegAlg|
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The  :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>`, proposed by Gabriel Bracha and Sam Toueg [Bracha1987]_, aims to detect the deadlocks in the system. The algorithm operates on the N-out-of-M deadlock model and is under the assumption that it is possible to capture the consistent global state of the system without halting the system execution. The algorithm starts execution when a node, named initiator, suspects that it may be in a deadlocked state. This can happen after a long wait for a request to be satisfied. The initiator starts a Lai-Yang snapshot :ref:`Lai-Yang Snapshot Algorithm <LaiYangSnapshotAlgorithm>` to compute the WFG. To differentiate between snapshots invoked by different initiators, the algorithm associates each snapshot, along with its messages, with the initiator's identity. After a node v constructs its snapshot, it computes two sets of nodes:
 
-**OUTv**: The set of nodes *u* for which *v*'s request has not been granted or relinquished. 
-**INv**: The set of nodes requesting a service from *v*, according to *v*’s point of view. The node *v* received requests from a set of nodes, but *v* has not yet granted or dismissed the requests. 
+-  **OUTv**: The set of nodes *u* for which *v*'s request has not been granted or relinquished. 
+-  **INv**: The set of nodes requesting a service from *v*, according to *v*’s point of view. The node *v* received requests from a set of nodes, but *v* has not yet granted or dismissed the requests. 
 
 After computing each set of nodes, the algorithm consists of two phases. *Notify* - where processes are notified that the algorithm started execution - and *Grant* in which active processes simulate the granting of requests. 
 
@@ -118,8 +118,9 @@ The :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectio
     32  take a local snapshot state of p
     33  end if 
 
-Example
-~~~~~~~~
+
+Example With Deadlock Present in The System
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: 
 
@@ -131,17 +132,51 @@ Example
 
            Fig 2. Step 2
 
-Assume a system with three processes, A, B and C. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<A>* = *requests<B>* = *requests<C>* = 1 
+Assume a system with three processes, P, Q and R. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<P>* = *requests<Q>* = *requests<R>* = 1.
 The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
 
-1. The initiator A, sets *notified<A>* to true and sends <**notify**> to B. A awaits <**done**> from B. (See Figure 1) 
-2. B receives <**notify**> from A and sets *notified<B>* to true. In order to send <**done**> to A, B sends <**nofity**> to C and awaits <**done**> from C. (See Figure 1) 
-3. C receives <**notify**> from B and sets *notified<C>* to true. In order to send <**done**> to B, C sends <**nofity**> to A and awaits <**done**> from A. (See Figure 1) 
-4. Since *notified<A>* is true, A does not send any <**notify**> messages. It directly sends <**done**> to C. (See Figure 2)
-5. C sends <**done**> to B because C is already notified. (See Figure 2)
-6. B sends <**done**> to A because B is already notified. (See Figure 2)
-7. Once A receives <**done**> from all its OUT, consisting of B, it checks the *free<A>*, and since *free<A>* is false, it concludes that the resources are never granted and it is deadlocked. 
-  
+1. The initiator P, sets *notified<A>* to true and sends <**notify**> to Q. P awaits <**done**> from Q. (See Figure 1) 
+2. Q receives <**notify**> from P and sets *notified<Q>* to true. In order to send <**done**> to P, Q sends <**nofity**> to R and awaits <**done**> from R. (See Figure 1) 
+3. R receives <**notify**> from Q and sets *notified<R>* to true. In order to send <**done**> to Q, R sends <**nofity**> to P and awaits <**done**> from P. (See Figure 1) 
+4. Since *notified<P>* is true, P does not send any <**notify**> messages. It directly sends <**done**> to R. (See Figure 2)
+5. R sends <**done**> to Q because R is already notified. (See Figure 2)
+6. Q sends <**done**> to P because Q is already notified. (See Figure 2)
+7. Once P receives <**done**> from all its OUT, consisting of Q, it checks the *free<A>*, and since *free<P>* is false, it concludes that the resources are never granted and it is deadlocked. 
+
+Example With Deadlock Not Present in The System
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table:: 
+
+    * - .. figure:: figures/brachaToueg_Ex2_step1.png
+
+           Fig 1. Step 1
+
+      - .. figure:: figures/brachaToueg_Ex2_ste2.png
+
+           Fig 2. Step 2
+           
+      - .. figure:: figures/brachaToueg_Ex2_ste3.png
+
+           Fig 2. Step 3
+      
+      - .. figure:: figures/brachaToueg_Ex2_ste4.png
+
+           Fig 2. Step 4
+
+Assume a system with three processes, P, Q and R. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<P>* = 2, *requests<Q>* = 1 and *requests<R>* = 0. 
+The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
+
+1. The initiator P, sets *notified<P>* to true and sends <**notify**> to Q and R. A awaits <**done**> from Q and R. (See Figure 3) 
+2. Q receives <**notify**> from P and sets *notified<Q>* to true. In order to send <**done**> to P, Q sends <**nofity**> to R and awaits <**done**> from R. (See Figure 4) 
+3. R receives <**notify**> from Q and P and sets *notified<R>* to true. Since requests<R> = 0. It sends <**grant**> to P and R and awaits <**ack**> from them. (See Figure 5) 
+4. P receives <**grant**> from Q and sets *requests<P>* to 1. P sends <**ack**> to Q. (See Figure 6) 
+5. Q receives <**grant**> from R and sets *requests<Q>* to 0. It first sends <**ack**> to R, and then sends <**grant**> to P. (See Figure 6) 
+6. P receives <**grant**> from Q and sets *requests<P>* to 0. It sends <**ack**> to Q. (See Figure 6) 
+7. R receives <**ack**> from Q and P, it sends <**done**> to P. (See Figure 6) 
+8. Q receives <**ack**> from P, it sends <**done**> to P. (See Figure 6) 
+9. P receives <**done**> from Q and R, checks the value of *free<P>* and concludes that it is not deadlocked.
+
  
 Correctness
 ~~~~~~~~~~~
