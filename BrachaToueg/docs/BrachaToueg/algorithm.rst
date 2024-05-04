@@ -156,7 +156,7 @@ Example With Deadlock Not Present in The System
 
            Fig 4. Step 2
            
-    *  - .. figure:: figures/brachaToueg_Ex2_step3.png
+    * - .. figure:: figures/brachaToueg_Ex2_step3.png
 
            Fig 5. Step 3
       
