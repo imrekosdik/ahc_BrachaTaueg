@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from adhoccomputing.Generics import *
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
-from BrachaToueg.BrachaTouegImplementation.BrachaToueg import BrachaTouegComponentModel, BrachaTouegEventTypes
+from BrachaToueg.BrachaToueg.BrachaToueg import BrachaTouegComponentModel, BrachaTouegEventTypes
 
 
 def create_undirected_ring():

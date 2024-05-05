@@ -5,4 +5,4 @@ Code Documentation
    :toctree: generated
    :recursive:
 
-   ShavitFrancezImplementation.ShavitFrancez
+   ShavitFrancez.ShavitFrancez

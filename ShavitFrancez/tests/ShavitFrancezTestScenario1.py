@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from adhoccomputing.Generics import *
 from adhoccomputing.Experimentation.Topology import Topology
 from adhoccomputing.Networking.LogicalChannels.GenericChannel import GenericChannel
-from ShavitFrancez.ShavitFrancezImplementation.ShavitFrancez import ShavitFrancezComponentModel, ShavitFrancezEventTypes
+from ShavitFrancez.ShavitFrancez.ShavitFrancez import ShavitFrancezComponentModel, ShavitFrancezEventTypes
 
 
 def create_undirected_ring():
