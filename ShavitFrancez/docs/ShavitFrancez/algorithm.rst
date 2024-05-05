@@ -121,6 +121,7 @@ The :ref:`Echo Algorithm <EchoAlgorithm>` [Fokking2013]_ takes part in making su
 
 Example With Terminating Distributed System Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. list-table:: 
 
     * - .. figure:: figures/shavit_step1.png
@@ -158,7 +159,8 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 6. Since p became passive as the root of a tree, and cc<p> = 0, it starts a wave. This wave completes, so that p calls Announce.(See Figure 6)
 
 Example With Non-Terminating Distributed System Algorithm
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. list-table:: 
 
     * - .. figure:: figures/shavit_ex2_step1.png
