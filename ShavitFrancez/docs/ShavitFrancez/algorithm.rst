@@ -159,7 +159,6 @@ Assume that there are three processes p, q, r in an undirected network. One way 
 
 Example With Non-Terminating Distributed System Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. list-table:: 
 
     * - .. figure:: figures/shavit_ex2_step1.png
