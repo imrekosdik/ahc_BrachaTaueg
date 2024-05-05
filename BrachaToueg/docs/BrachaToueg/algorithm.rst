@@ -188,7 +188,8 @@ Complexity
 1. **Time Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has time complexity of 4 * d hops, where d is the diameter of a given WFG. [Kshemkalyani1994]_
 2. **Message Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has message complexity of 4 * e messages, where e is the number of the edges in a given WFG. [Kshemkalyani1994]_
 
-
+References
+~~~~~~~~~~~
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
 .. [Bracha1987] G. Bracha and S. Toeug, "Distributed Deadlock detection". Distributed Comput., vol. 2, pp. 127-138, 1987
 .. [Kshemkalyani2008] Ajay D. Kshemkalyani, Mukesh Singhal, Distributed Computing: Principles, Algorithms and Systems, Cambridge Univeristy Press, New York, USA, 2008 
