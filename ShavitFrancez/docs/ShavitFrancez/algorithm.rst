@@ -167,7 +167,7 @@ Example With Non-Terminating Distributed System Algorithm
 
            Step 1
 
-      - .. figure:: figures/shavit_ex2_step2.png
+    * - .. figure:: figures/shavit_ex2_step2.png
 
            Step 2
 
@@ -178,10 +178,10 @@ Example With Non-Terminating Distributed System Algorithm
 Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFrancezTerminationDetectionAlgorithm>` is as follows:
 
 1. At the start, the initiators p and r both send a basic message to q, and set cc<p> and cc<r> to 1. (See Figure 7)
-2. Upon receipt of the basic message from p, q becomes active and makes p its parent. Next, q receives the basic message from r, and sends back an acknowledgment, which causes r to decrease cc<r> to 0.(See Figure 2)
-4. Next, r becomes passive.
-5. Since r became passive as the root of a tree, and cc<r> = 0, it starts a wave. This wave does not complete, because p and q refuse to participate.(See Figure 3)
-6. Since neither p nor q becomes passive at some point, the algorithm cannot complete the wave and cannot announce termination.
+2. Upon receipt of the basic message from p, q becomes active and makes p its parent. Next, q receives the basic message from r, and sends back an acknowledgment, which causes r to decrease cc<r> to 0. (See Figure 2)
+3. Next, r becomes passive.
+4. Since r became passive as the root of a tree, and cc<r> = 0, it starts a wave. This wave does not complete, because p and q refuse to participate.(See Figure 3)
+5. Since neither p nor q becomes passive at some point, the algorithm cannot complete the wave and cannot announce termination.
 
 Correctness
 ~~~~~~~~~~~

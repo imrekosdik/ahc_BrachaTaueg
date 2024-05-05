@@ -74,7 +74,7 @@ class BrachaTouegComponentModel(GenericModel):
         '''
         This method sends a request to the given component in the arguments, simulating 
         that this process requires some resource/communication from the given component
-        *REQUEST is part of the basic algorithm and independent of the detection algorithm. 
+        REQUEST is part of the basic algorithm and independent of the detection algorithm. 
         '''
         instance_number = component.componentinstancenumber
         self.number_of_requests += 1
