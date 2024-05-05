@@ -162,7 +162,7 @@ Example With Non-Terminating Distributed System Algorithm
 
 .. list-table:: 
 
-    * - .. figure:: figures/shavit_ex1_step1.png
+    * - .. figure:: figures/shavit_ex2_step1.png
 
            Step 1
 
@@ -170,7 +170,7 @@ Example With Non-Terminating Distributed System Algorithm
 
            Step 2
 
-    * - .. figure:: figures/shavit_e2_step3.png
+    * - .. figure:: figures/shavit_ex2_step3.png
 
            Step 3
 
