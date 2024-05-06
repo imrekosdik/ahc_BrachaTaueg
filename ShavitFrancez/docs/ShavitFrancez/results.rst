@@ -50,7 +50,7 @@ For a ring topology, if there are n number of nodes, then there exists n number 
      - 53.18007707595825
      - 1000 (wave) + 1000 (basic)
 
-We also run the same experiments on complete topology with different node counts. Since all nodes send each other basic messages, we observed the same order of result in terms of number of exchanged messages. Therefore, we do not present the number of exchanged messages in the below table, we only show the time elapsed to detect termination.
+For the second experiment, we generate complete topologies with different node counts. As in the first configuration, there is one initiator and each node sends basic message to all of its neighbors. After executing the algorithm for topologies with 2,5, 10, 20, 30, 40 and 50 node counts, we conclude that, the same relationship between the number of edges and the exchanged messages exist in this experiment as well. It seems that, there are not much difference between elapsed time of this experiment with the first experiment. Note that, we could not execute the algorithm for node counts larger than 40 because adhoccomputing library could not create new threads.
 
 .. list-table:: Table 2: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology
    :widths: 25 25 50
@@ -71,10 +71,7 @@ We also run the same experiments on complete topology with different node counts
    * - 40
      - 10.92475700378418
     
-Since more than one node can trigger the termination detection algorithm, we analyze the message complexity of a complete topology of 
-10 nodes with 1 to 5 number of initiators. In the table, we present the best time to finish execution of the 
-termination detection algorithm among different number of initiators. In this configuration, we also make each node send 
-basic messages to each of its neighbors as well. 
+For the last experiment, since more than one node can trigger the termination detection algorithm, we analyze the message complexity of a complete topology of 10 nodes with 1 to 5 number of initiators. Other than that, the experiment setup is exactly like that in the first and second experiments. There are 90 wave messages and 90 basic messages exchanged between the nodes. Each of the initiator is able to announce termination so we present the best time elapsed among different initiator results. To conclude, even though the number of initiators change, number of exchanged messages stay the same. Since each initiator forms its own forest and the number of messages do not change, the elapsed time does not get affected by the initiator count. 
 
 .. list-table:: Table 3: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology with Different Number of Initiators
    :widths: 25 25 50
@@ -83,15 +80,15 @@ basic messages to each of its neighbors as well.
    * - Initiator Count
      - Time Elapsed Until Termination
    * - 1
-     - 1.211822748184204
+     - 2.073668956756592
    * - 2
-     - 1.5393249988555908
+     - 2.172826051712036
    * - 3
-     - 2.0759570598602295
+     - 2.1762309074401855
    * - 4
-     - 3.2077481746673584
+     - 2.169590950012207
    * - 5
-     - 4.605236291885376
+     - 2.158134937286377
 
 Discussion
 ~~~~~~~~~~

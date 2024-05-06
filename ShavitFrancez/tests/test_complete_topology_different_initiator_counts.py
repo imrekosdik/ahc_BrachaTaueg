@@ -16,11 +16,13 @@ def main():
     time.sleep(0.1)
     components[3].send_self(Event(components[3], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
     time.sleep(0.1)
+    components[4].send_self(Event(components[4], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
+    time.sleep(0.1)
     for i in range(node_count):
         time.sleep(0.1)
         components[i].send_self(Event(components[i], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))
         
-    time.sleep(5)
+    time.sleep(1)
     for i in range(node_count):
         components[i].send_self(Event(components[i], ShavitFrancezEventTypes.BECOMEPASSIVE, None))
     
