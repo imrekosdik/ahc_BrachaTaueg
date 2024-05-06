@@ -14,6 +14,68 @@ We implemented both the Echo Algorithm and the Shavit-Francez Termination Detect
 Results
 ~~~~~~~~
 
+.. list-table:: Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Node Count
+     - Time Elapsed Until Termination
+     - Number of Exchanged Messages
+   * - 2
+     - 1.211822748184204
+     - 1
+   * - 5
+     - 1.5393249988555908
+     - 16
+   * - 10
+     - 2.0759570598602295
+     - 81
+   * - 20
+     - 3.2077481746673584
+     - 361
+   * - 30
+     - 4.605236291885376
+     - 841
+   * - 40
+     - 10.92475700378418
+     - 1521
+
+.. list-table:: Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Node Count
+     - Time Elapsed Until Termination
+     - Number of Exchanged Messages
+   * - 2
+     - 1.207543134689331
+     - 1
+   * - 5
+     - 1.5333149433135986
+     - 6
+   * - 10
+     - 2.045008897781372
+     - 11
+   * - 20
+     - 3.0964579582214355
+     - 21
+   * - 30
+     - 4.135018825531006
+     - 31
+   * - 50
+     - 6.216088056564331
+     - 51
+   * - 100
+     - 11.443176984786987
+     - 101
+   * - 500
+     - 53.18007707595825
+     - 501
+
+    
+
+     
+
 
 Discussion
 ~~~~~~~~~~
