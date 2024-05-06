@@ -50,6 +50,12 @@ For a ring topology, if there are n number of nodes, then there exists n number 
      - 53.18007707595825
      - 1000 (wave) + 1000 (basic)
 
+.. image:: figures/exchanged_messages.png
+  :width: 400
+
+.. image:: figures/time_elapsed.png
+  :width: 400
+
 For the second experiment, we generate complete topologies with different node counts. As in the first configuration, there is one initiator and each node sends basic message to all of its neighbors. After executing the algorithm for topologies with 2,5, 10, 20, 30, 40 and 50 node counts, we conclude that, the same relationship between the number of edges and the exchanged messages exist in this experiment as well. It seems that, there are not much difference between elapsed time of this experiment with the first experiment. Note that, we could not execute the algorithm for node counts larger than 40 because adhoccomputing library could not create new threads.
 
 .. list-table:: Table 2: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology
