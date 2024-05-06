@@ -52,13 +52,17 @@ class BrachaTouegComponentModel(GenericModel):
         self.number_of_requests = 0
         self.number_of_received_ack_messages = 0
         self.number_of_received_done_messages = 0
-    
+
+        self.start_time = None
+        self.end_time = None
+        self.received_messages = 0
 
     def on_receiving_detect_deadlock(self, eventobj: Event):
         '''
         This method triggers the Bracha-Toueg Deadlock Detection Algorithm
         by first taking a local snapshot of the component starting the algorithm.
         ''' 
+        self.start_time = time.time()
         self.deadlock_detection_initiator = True
         self.send_self(Event(self, LaiYangEventTypes.TAKESNAPSHOT, None))
     
@@ -140,16 +144,20 @@ class BrachaTouegComponentModel(GenericModel):
         if eventobj.eventcontent.header.messageto == self.componentinstancenumber:
             messagetype = eventobj.eventcontent.header.messagetype
             if messagetype == BrachaTouegMessageTypes.ACKNOWLEDGE:
+                self.received_messages += 1
                 self.on_receiving_acknowledge(eventobj)
             elif messagetype == LaiYangMessageTypes.PRESNAPSHOT:
                 self.on_receiving_presnapshot(eventobj)
             elif messagetype == BrachaTouegMessageTypes.REQUEST:
                 self.on_receiving_request_from_component(eventobj)
             elif messagetype == BrachaTouegMessageTypes.NOTIFY:
+                self.received_messages += 1
                 self.on_receiving_notify(eventobj)
             elif messagetype == BrachaTouegMessageTypes.DONE:
+                self.received_messages += 1
                 self.on_receiving_done(eventobj)
             elif messagetype == BrachaTouegMessageTypes.GRANT:
+                self.received_messages += 1
                 self.on_receiving_grant(eventobj)
     
 
@@ -223,6 +231,8 @@ class BrachaTouegComponentModel(GenericModel):
                 logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is not deadlocked.")
             else:
                 logger.critical(f"{self.componentname}.{self.componentinstancenumber} concludes that it is deadlocked.")
+            self.end_time = time.time()
+            logger.critical(f"Time Elapsed: {self.end_time - self.start_time}")
 
     
     def grant(self):

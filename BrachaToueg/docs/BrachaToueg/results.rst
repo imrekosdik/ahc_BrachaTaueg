@@ -14,5 +14,53 @@ We implemented the Lai-Yang Snapshot Algorithm and the Bracha-Toueg Deadlock Det
 Results
 ~~~~~~~~
 
+.. list-table:: Table 1: Message Complexity Analysis of Deadlock Detection Algorithm on a Ring Topology
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Node Count
+     - Number of Exchanged Control Messages
+     - Time Elapsed Until Detection
+   * - 5
+     - 12
+     - 0.5193710327148438
+   * - 10
+     - 22
+     - 0.10675311088562012
+   * - 20
+     - 42
+     - 0.11047983169555664
+   * - 50
+     - 72
+     - 4.122158050537109
+   * - 100
+     - 123
+     - 7.982053995132446
+
+
+.. list-table:: Table 2: Message Complexity Analysis of Deadlock Detection Algorithm on a Complete Topology
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Cycles in the Topology
+     - Initiator Node
+     - Time Elapsed Until Detection
+   * - [0, 2, 3, 4, 5, 6, 7, 8, 9]
+     - 7
+     - 0.1082148551940918
+   * - [0, 1, 2, 3, 6, 7, 8, 9]
+     - 8
+     - 0.10948896408081055
+   * - [2, 3, 4, 5, 6, 7, 8]
+     - 2
+     - 0.7286171913146973
+   * - [0, 2, 4, 8, 9]
+     - 4
+     - 0.31595897674560547
+   * - [0, 3, 6]
+     - 6
+     - 0.31595897674560547
+
+
 Discussion
 ~~~~~~~~~~
