@@ -37,6 +37,11 @@ Results
      - 123
      - 7.982053995132446
 
+.. image:: figures/number_exchanged_messages.png
+  :width: 400
+
+.. image:: figures/time_elapsed.png
+  :width: 400
 
 .. list-table:: Table 2: Message Complexity Analysis of Deadlock Detection Algorithm on a Complete Topology
    :widths: 25 25 50
