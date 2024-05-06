@@ -1,14 +1,21 @@
 from GenerateTopology import *
 
 def main():
-    node_count = 5
+    node_count = 10
     topology = generate_complete_topology(node_count, ShavitFrancezComponentModel, GenericChannel)
 
     topology.start()
 
     components = list(topology.nodes.values())
     time.sleep(5)
-    components[0].send_self(Event(components[0], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
+    components[0].send_self(Event(components[0], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))
+    time.sleep(0.1)  
+    components[1].send_self(Event(components[1], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
+    time.sleep(0.1)
+    components[2].send_self(Event(components[2], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
+    time.sleep(0.1)
+    components[3].send_self(Event(components[3], ShavitFrancezEventTypes.DETECTTERMINATION, eventcontent="Initiator"))  
+    time.sleep(0.1)
     for i in range(node_count):
         time.sleep(0.1)
         components[i].send_self(Event(components[i], ShavitFrancezEventTypes.SENDBASICMESSAGE, None))

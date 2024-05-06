@@ -37,7 +37,8 @@ class ShavitFrancezComponentModel(GenericModel):
 
         self.start_time = None
         self.end_time = None
-        self.exchanged_messages = 0
+        self.basic_exchanged_messages = 0
+        self.wave_exchanged_messages = 0
 
     def on_init(self, eventobj):
         for neighbor in self.topology.G.neighbors(self.componentinstancenumber):
@@ -74,7 +75,6 @@ class ShavitFrancezComponentModel(GenericModel):
             self.is_active = True
             self.termination_parent = eventobj.eventsource_componentinstancenumber
         else:
-            self.exchanged_messages += 1
             self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.ACKNOWLEDGE, eventobj.eventsource_componentinstancenumber)))
 
 
@@ -107,8 +107,10 @@ class ShavitFrancezComponentModel(GenericModel):
             if message == ShavitFrancezMessageTypes.ACKNOWLEDGE:
                 self.on_receiving_acknowledge_message(eventobj)
             elif message == ShavitFrancezMessageTypes.BASICMESSAGE:
+                self.basic_exchanged_messages += 1
                 self.on_receiving_basic_message(eventobj)
             elif message == ShavitFrancezMessageTypes.WAVE:
+                self.wave_exchanged_messages += 1
                 self.on_receiving_start_wave(eventobj)
             elif message == ShavitFrancezMessageTypes.NOTIFYPROCESSES:
                 self.termination_initiators.append(eventobj.eventcontent.header.messagefrom)
@@ -133,8 +135,6 @@ class ShavitFrancezComponentModel(GenericModel):
         This method sends wave messages to the process' all its neighbors
         '''
         self.wave_initiators.append(self.componentinstancenumber)
-        for i in range(len(self.neighbors)):
-            self.exchanged_messages += 1
         header = GenericMessageHeader(ShavitFrancezMessageTypes.WAVE, self.componentinstancenumber, None)
         payload = GenericMessagePayload(self.componentinstancenumber)
         message = GenericMessage(header, payload)
@@ -153,14 +153,11 @@ class ShavitFrancezComponentModel(GenericModel):
                 if len(self.neighbors) > 1:
                     for neighbor in self.neighbors:
                         if neighbor != self.wave_parent:
-                            self.exchanged_messages += 1
                             self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.WAVE, neighbor)))
                 else:
-                    self.exchanged_messages += 1
                     self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.WAVE, self.wave_parent)))
             elif len(self.neighbors) == self.number_of_received_wave_messages:
                 if self.wave_parent is not None:
-                    self.exchanged_messages += 1
                     self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.WAVE, self.wave_parent)))
                 else:
                     self.decide()
@@ -180,7 +177,6 @@ class ShavitFrancezComponentModel(GenericModel):
         '''
         if not self.is_active and self.number_of_children == 0:
             if self.termination_parent is not None and self.termination_parent is not self.componentinstancenumber:
-                self.exchanged_messages += 1
                 self.send_down(Event(self, EventTypes.MFRT, self.generate_message(ShavitFrancezMessageTypes.ACKNOWLEDGE, self.termination_parent)))
                 self.termination_parent = None 
             else:
