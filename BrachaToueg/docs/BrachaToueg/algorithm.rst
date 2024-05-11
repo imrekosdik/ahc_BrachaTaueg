@@ -38,36 +38,36 @@ After computing each set of nodes, the algorithm consists of two phases. *Notify
     :linenos:
     :caption: Bracha-Toueg Deadlock Detection Algorithm [Fokking2013]_.
     
-    1   Procedure Notify
-    2   notified <- true
-    3   send<notify> to all w ∈  OUT
-    4   if requests = 0 then
-	5	    perform Procedure Grant
-	6   end if
-    7   await<done> from all w ∈ OUT
-    8   if free then:
-    9        conclude that it is not deadlocked
-    10    end if
+    Procedure Notify
+    notified <- true
+    send<notify> to all w ∈  OUT
+    if requests = 0 then
+	    perform Procedure Grant
+	end if
+    await<done> from all w ∈ OUT
+    if free then:
+        conclude that it is not deadlocked
+    end if
 
-    12   Upon receipt by v of Notify from a neighbor w:
-    13   if notified = false then
-	14  	Perform Procedure Notify
-    15  end if
-    16  send<done> to w
+    Upon receipt by v of Notify from a neighbor w:
+    if notified = false then
+	    Perform Procedure Notify
+    end if
+    send<done> to w
 
-    17  Procedure Grant
-    18  free <- true
-    19  send<grant> to all w ∈ IN
-    20  await<ack> from all w ∈ IN
+    Procedure Grant
+    free <- true
+    send<grant> to all w ∈ IN
+    await<ack> from all w ∈ IN
 
-    21  Upon receipt by v of Grant from a neighbor w:
-    22  if requests > 0 then
-	23	    requests <- request - 1
-    24      if requests = 0 then
-	25		    Perform procedure Grant
-	26	    end if
-    27  end if
-    28  send<ack> to w
+    Upon receipt by v of Grant from a neighbor w:
+    if requests > 0 then
+	    requests <- request - 1
+        if requests = 0 then
+	        Perform procedure Grant
+	    end if
+    end if
+    send<ack> to w
 
 
 Lai-Yang Snapshot Algorithm:
@@ -80,58 +80,58 @@ The :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectio
     :linenos:
     :caption: Lai-Yang Snapshot Algorithm [Fokking2013]_
     
-    1   bool recorded
-    2   nat counter[c] for all channels c of p
-    3   mess-set State[c] for all incoming channels of p
+    bool recorded
+    nat counter[c] for all channels c of p
+    mess-set State[c] for all incoming channels of p
     
-    4   if p wants to initiate a snapshot
-    5   perform Procedure TakeSnapshot
+    if p wants to initiate a snapshot
+    perform Procedure TakeSnapshot
 
-    6   if p sends a basic message m into an outgoing channel c<0>
-    7   send<m,recorded> into c<0>
-    8   if recorded is False then
-    9       counter[c<0>] <- counter[c<0>] + 1
-    10  end if
+    if p sends a basic message m into an outgoing channel c<0>
+    send<m,recorded> into c<0>
+    if recorded is False then
+        counter[c<0>] <- counter[c<0>] + 1
+    end if
 
-    11  if p receives <m, b> through an incomming channel c<0>
-    12  if b = True then
-    13      perform Procedure TakeSnapshot
-    14  else
-    15      counter[c<0>] <- counter[c<0>] - 1 
-    16      if recorded = True then
-    17          State[c<0>] <- State[c<0>] U {m}
-    18          if |State[c]| + 1 = counter[c<0>] for all incoming channels c of p then
-    19              terminate
-    20          end if
-    21      end if
-    22  end if
+    if p receives <m, b> through an incomming channel c<0>
+    if b = True then
+        perform Procedure TakeSnapshot
+    else
+        counter[c<0>] <- counter[c<0>] - 1 
+        if recorded = True then
+            State[c<0>] <- State[c<0>] U {m}
+            if |State[c]| + 1 = counter[c<0>] for all incoming channels c of p then
+                terminate
+            end if
+        end if
+    efficiencynd if
 
-    23  if p receives <presnap, l> through an incoming channel c<0>
-    24  counter[c<0>] <- counter[c<0>] + L
-    25  if |State[c]| + 1 = counter[c<0>] for all incoming channels c of p then
-    26      terminate
-    27  end if 
+    
+    if p receives <presnap, l> through an incoming channel c<0>
+    counter[c<0>] <- counter[c<0>] + L
+    if |State[c]| + 1 = counter[c<0>] for all incoming channels c of p then
+        terminate
+    end if 
 
-    28  Procedure TakeSnapshot
-    29  if recorded = false then
-    30      recorded <- True
-    31  send <presnap, counter<c0>> into each outgoing channel c
-    32  take a local snapshot state of p
-    33  end if 
-
+    Procedure TakeSnapshot
+    if recorded = false then
+        recorded <- True
+        send <presnap, counter<c0>> into each outgoing channel c
+        take a local snapshot state of p
+    end if 
 
 Example With Deadlock Present in The System
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+ 
 .. list-table:: 
 
     * - .. figure:: figures/brachaToueg_Ex1_step1.png
 
-           Fig 1. Step 1
+           Step 1
 
       - .. figure:: figures/brachaToueg_Ex1_step2.png
 
-           Fig 2. Step 2
+           Step 2
 
 Assume a system with three processes, P, Q and R. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<P>* = *requests<Q>* = *requests<R>* = 1.
 The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
@@ -152,19 +152,19 @@ Example With Deadlock Not Present in The System
 
     * - .. figure:: figures/brachaToueg_Ex2_step1.png
 
-           Fig 3. Step 1
+           Step 1
 
       - .. figure:: figures/brachaToueg_Ex2_step2.png
 
-           Fig 4. Step 2
+           Step 2
            
     * - .. figure:: figures/brachaToueg_Ex2_step3.png
 
-           Fig 5. Step 3
+           Step 3
       
       - .. figure:: figures/brachaToueg_Ex2_step4.png
 
-           Fig 6. Step 4
+           Step 4
 
 Assume a system with three processes, P, Q and R. The wait-for graph consists of three 1-out-of-1 requests, has been computed in a snapshot. Initially *requests<P>* = 2, *requests<Q>* = 1 and *requests<R>* = 0. 
 The walkthrough of the :ref:`Bracha-Toueg Deadlock Detection Algorithm <BrachaTouegDeadlockDetectionAlgorithm>` is as follows: 
