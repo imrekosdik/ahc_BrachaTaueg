@@ -18,7 +18,7 @@ In order to evaluate the message complexity of the Shavit-Francez Termination De
 
 For a ring topology, if there are n number of nodes, then there exists n number of edges in the topology. On the table, we observe that the number of exchanged wave messages is exactly two terminates the number of edges. That means, it is consistent with the message complexity of the Echo Algorithm, which is O(2E). Since each node sends basic message to each of its neighbors, then there should be 2 * n basic messages exchanged in the topology. So, the results we get gives us the complexity of the underlying computation, which is O(M), where M is 2 * n. We also observe that, the time it takes to complete the execution of the algorithm is directly proportional to the number of nodes in the topology.
 
-.. list-table:: Table 1: Message Complexity Analysis of Termination Detection Algorithm on a Ring Topology
+.. list-table:: Message Complexity Analysis of Termination Detection Algorithm on a Ring Topology
    :widths: 25 25 50
    :header-rows: 1
 
@@ -63,8 +63,8 @@ For a ring topology, if there are n number of nodes, then there exists n number 
 
 For the second experiment, we generate complete topologies with different node counts. As in the first configuration, there is one initiator and each node sends basic message to all of its neighbors. After executing the algorithm for topologies with 2,5, 10, 20, 30, 40 and 50 node counts, we conclude that, the same relationship between the number of edges and the exchanged messages exist in this experiment as well. It seems that, there are not much difference between elapsed time of this experiment with the first experiment. Note that, we could not execute the algorithm for node counts larger than 40 because adhoccomputing library could not create new threads.
 
-.. list-table:: Table 2: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology
-   :widths: 25 25 50
+.. list-table:: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology
+   :widths: 25 25
    :header-rows: 1
 
    * - Node Count
@@ -84,8 +84,8 @@ For the second experiment, we generate complete topologies with different node c
     
 For the last experiment, since more than one node can trigger the termination detection algorithm, we analyze the message complexity of a complete topology of 10 nodes with 1 to 5 number of initiators. Other than that, the experiment setup is exactly like that in the first and second experiments. There are 90 wave messages and 90 basic messages exchanged between the nodes. Each of the initiator is able to announce termination so we present the best time elapsed among different initiator results. To conclude, even though the number of initiators change, number of exchanged messages stay the same. Since each initiator forms its own forest and the number of messages do not change, the elapsed time does not get affected by the initiator count. 
 
-.. list-table:: Table 3: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology with Different Number of Initiators
-   :widths: 25 25 50
+.. list-table:: Message Complexity Analysis of Termination Detection Algorithm on a Complete Topology with Different Number of Initiators
+   :widths: 25 25
    :header-rows: 1
 
    * - Initiator Count

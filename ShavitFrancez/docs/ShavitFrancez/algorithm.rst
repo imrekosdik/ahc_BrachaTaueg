@@ -178,9 +178,9 @@ Example With Non-Terminating Distributed System Algorithm
 Assume that there are three processes p, q, r in an undirected network. One way to execute the :ref:`Shavit-Francez Algorithm <ShavitFrancezTerminationDetectionAlgorithm>` is as follows:
 
 1. At the start, the initiators p and r both send a basic message to q, and set cc<p> and cc<r> to 1. (See Figure 7)
-2. Upon receipt of the basic message from p, q becomes active and makes p its parent. Next, q receives the basic message from r, and sends back an acknowledgment, which causes r to decrease cc<r> to 0. (See Figure 2)
+2. Upon receipt of the basic message from p, q becomes active and makes p its parent. Next, q receives the basic message from r, and sends back an acknowledgment, which causes r to decrease cc<r> to 0. (See Figure 8)
 3. Next, r becomes passive.
-4. Since r became passive as the root of a tree, and cc<r> = 0, it starts a wave. This wave does not complete, because p and q refuse to participate.(See Figure 3)
+4. Since r became passive as the root of a tree, and cc<r> = 0, it starts a wave. This wave does not complete, because p and q refuse to participate.(See Figure 9)
 5. Since neither p nor q becomes passive at some point, the algorithm cannot complete the wave and cannot announce termination.
 
 Correctness
@@ -196,8 +196,6 @@ Complexity
 2. :ref:`Echo Algorithm <EchoAlgorithm>`: The message complexity is O(2E), where E is the number of edges. [Fokking2013]_
 
 
-References 
-~~~~~~~~~~
 .. [ShavitFrancez1986] Shavit, N. and Francez, N. A new approach to the detection of locally indicative stability. In proc. Int. Colloq. Automata, Languages, and Programming (1986), L. Kott (ed.), vol. 226 of Lecture Notes in Computer Science, Springer-Verlag, pp. 344-358.
 .. [Fokking2013] Wan Fokkink, Distributed Algorithms An Intuitive Approach, The MIT Press Cambridge, Massachusetts London, England, 2013
 .. [DijkstraSholten1980] Dijkstra, E. W. and Scholten, C. S. Termination detection for diffusing computations. Inf. Proc. Lett. 11, 1 (1980), 1-4.

@@ -15,7 +15,7 @@ Results
 ~~~~~~~~
 We designed two distinct scenarios to evaluate the message complexity of the Bracha-Toueg Deadlock Detection Algorithm. For the first scenario, we considered ring topologies with node counts as deadlock occurrence is guaranteed once each node passes a request to one of its neighbors in the same direction. In this scheme, the network topology guarantees that every node in the topology is part of the deadlock as well. Once each component sends a request to its neighbor, we start executing the algorithm through the initiator of the topology. After that, we measure the time elapsed until the initiator component detects the deadlock in the distributed system. Table 1 presents the elapsed time along with the number of control message components exchanged while running the algorithm. Note that we do not include the control messages of the Lai-Yang snapshot algorithm as it is not part of the deadlock detection algorithm.
 
-.. list-table:: Table 1: Message Complexity Analysis of Deadlock Detection Algorithm on a Ring Topology
+.. list-table:: Message Complexity Analysis of Deadlock Detection Algorithm on a Ring Topology
    :widths: 25 25 50
    :header-rows: 1
 
@@ -52,7 +52,7 @@ The plots below shows the relationship between the node count in the network wit
 
 In the second scenario, we considered a complete topology of 10 nodes. In such a topology, there are different cycles with different participating nodes. Before executing the algorithm, we found random cycles with 9, 8, 7, 5, and 3 nodes and made each component send a request to its neighbors in the same direction. After that, we start executing the algorithm through a participating node of the cycles. Table 2 presents the time elapsed until an initiator detects the deadlock of the same cycle in the system.
 
-.. list-table:: Table 2: Message Complexity Analysis of Deadlock Detection Algorithm on a Complete Topology
+.. list-table:: Message Complexity Analysis of Deadlock Detection Algorithm on a Complete Topology
    :widths: 25 25 50
    :header-rows: 1
 
