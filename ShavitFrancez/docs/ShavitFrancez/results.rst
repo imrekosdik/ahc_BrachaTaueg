@@ -54,11 +54,11 @@ For a ring topology, if there are n number of nodes, then there exists n number 
 
     * - .. figure:: figures/exchanged_messages.png
 
-           Fig 1. The Relationship Between Node Count and Number Of Exchanged Messages
+          The Relationship Between Node Count and Number Of Exchanged Messages
 
       - .. figure:: figures/time_elapsed.png
 
-           Fig 4. The Relationship Between the Node Count and the Elapsed Time
+          The Relationship Between the Node Count and the Elapsed Time
 
 
 For the second experiment, we generate complete topologies with different node counts. As in the first configuration, there is one initiator and each node sends basic message to all of its neighbors. After executing the algorithm for topologies with 2,5, 10, 20, 30, 40 and 50 node counts, we conclude that, the same relationship between the number of edges and the exchanged messages exist in this experiment as well. It seems that, there are not much difference between elapsed time of this experiment with the first experiment. Note that, we could not execute the algorithm for node counts larger than 40 because adhoccomputing library could not create new threads.

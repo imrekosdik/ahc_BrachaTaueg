@@ -9,7 +9,7 @@ We utilized the Python (version 3.12) scripting language and the Ad-Hoc Computin
 
 If there is a cyclic dependency in the WFG, then we should expect that, the variable "free" for the initiator process can never be True. If there is no cyclic dependency in the WFG involving the initiator process, than we see that the variable "free" becomes True because the initiator process is able to grant some resources to other processes.
 
-We implemented the Lai-Yang Snapshot Algorithm and the Bracha-Toueg Deadlock Detection Algorithm by employing the pseudocode descriptions given by in [Fokking2013]_. We used the same message types given in the descriptions to achieve the message passing between the components. The make the component who is the initiator of the basic algorithm send itself "DETECTDEADLOCK" message to trigger the algorithm. Depending on whether the initiator process can set the variable "free" to True, the algorithm detects the deadlock. 
+We implemented the Lai-Yang Snapshot Algorithm and the Bracha-Toueg Deadlock Detection Algorithm by employing the pseudocode descriptions given by in [Fokking2013]_. We used the same message types given in the descriptions to achieve the message passing between the components. The make the component who is the initiator of the basic algorithm send itself "DETECTDEADLOCK" message to trigger the algorithm. Depending on whether the initiator process can set the variable "free" to True, the algorithm detects the deadlock. An important note here is that, waiting for DONE and ACKNOWLEDGE messages should not prevent receiving and sending GRANT and NOTIFY messages. Therefore, we increased the number of threads executing in a component to 3 to reflect the asynchronous wait operations.
 
 Results
 ~~~~~~~~
@@ -44,11 +44,11 @@ The plots below shows the relationship between the node count in the network wit
 
     * - .. figure:: figures/number_exchanged_messages.png
 
-           Fig 1. The Relationship Between Node Count and Number Of Exchanged Messages
+           The Relationship Between Node Count and Number Of Exchanged Messages
 
       - .. figure:: figures/time_elapsed.png
 
-           Fig 4. The Relationship Between the Node Count and the Elapsed Time
+           The Relationship Between the Node Count and the Elapsed Time
 
 In the second scenario, we considered a complete topology of 10 nodes. In such a topology, there are different cycles with different participating nodes. Before executing the algorithm, we found random cycles with 9, 8, 7, 5, and 3 nodes and made each component send a request to its neighbors in the same direction. After that, we start executing the algorithm through a participating node of the cycles. Table 2 presents the time elapsed until an initiator detects the deadlock of the same cycle in the system.
 
@@ -77,4 +77,10 @@ In the second scenario, we considered a complete topology of 10 nodes. In such a
 
 Discussion
 ~~~~~~~~~~
-We run two distinct experiments to analyze the message and time complexity of the algorithm. To distinguish between the experiments, we did not change the underlying computation, that is, we made each process send a request to one of its neighbors in the same direction. By not changing the underlying computation, we could observe the changes in the elapsed time over different topologies. In both scenarios, we observe that as the number of nodes participating in a cycle increases, the time it takes to detect the cycle in the topology goes up proportionally. 
+We conducted two separate experiments to analyze the message and time complexity of an algorithm. To distinguish between the experiments, we did not modify the underlying computation. Instead, we made each process send a request to one of its neighbors in the same direction. By not changing the underlying computation, we could observe the changes in elapsed time over different topologies.
+
+During the experiments, we had to add delays between events because we observed that, in the absence of the delays, we could not see the exchange of all the messages we sent. Additionally, we simulated some processes waiting to acquire resources as requests running in our topologies to conduct experiments.
+
+Since we were only interested in generating a Wait-For-Graph (WFG), we ignored other exchanged messages in the distributed system while taking the Lai-Yang Snapshot. As a result, the algorithm became heavily dependent on the custom event.
+
+Despite the challenges, we observed that as the number of nodes participating in a cycle increased, the time it took to detect the cycle in the topology went up proportionally.
