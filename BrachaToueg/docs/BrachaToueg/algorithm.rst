@@ -186,7 +186,7 @@ Deadlock is detected if and only if the initiator node belongs to a cycle of the
 Complexity 
 ~~~~~~~~~~
 1. **Time Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has time complexity of 4 * d hops, where d is the diameter of a given WFG. [Kshemkalyani1994]_
-2. **Message Complexity:** The :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>` has message complexity of 4 * e messages, where e is the number of the edges in a given WFG. [Kshemkalyani1994]_
+2. **Message Complexity:** In thhe :ref:`Bracha-Toueg Deadlock Detection <BrachaTouegDeadlockDetectionAlgorithm>`, at most four messages are sent over each edge, i.e., at most a total of 4e mes- sages are sent. The size of each message is a small constant number of bits. A node v of degree k needs o(k) bits of local storage, and spends o(k) time in local computation. [Bracha1987]_
 
 References
 ~~~~~~~~~~~

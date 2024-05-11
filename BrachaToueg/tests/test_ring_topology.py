@@ -3,7 +3,7 @@ from GenerateTopology import *
 
 
 def main():
-    node_count = 100
+    node_count = 10
     topology = generate_ring_topology(node_count, BrachaTouegComponentModel, GenericChannel)
     topology.start()
     time.sleep(1)
