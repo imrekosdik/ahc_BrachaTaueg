@@ -34,53 +34,53 @@ The :ref:`Shavit-Francez Termination Detection Algorithm <ShavitFrancezTerminati
     :linenos:
     :caption: Shavit-Francez Termination Detection Algorithm
     
-    1   bool active<p> // set when p becomes active, and reset when p becomes passive
-    2   nat cc<p> // keeps track of the number of children of p in its tree
-    3   proc parent<p> // the parent of p in a tree in the forest
+    bool active<p> // set when p becomes active, and reset when p becomes passive
+    nat cc<p> // keeps track of the number of children of p in its tree
+    proc parent<p> // the parent of p in a tree in the forest
     
-    4   if p is an initiator then
-    5       active<p> <- true
-    6   end if
+    if p is an initiator then
+       active<p> <- true
+    end if
 
-    7   if p sends a basic message then
-    8       cc<p> <- cc<p> + 1
-    9   end if
+    if p sends a basic message then
+       cc<p> <- cc<p> + 1
+    end if
 
-    10  if p receives a basic message from a neighbor q then
-    11    if active<p> = false then
-    12        active<p> <- true
-    13        parent<p> <- q
-    14    else 
-    15        send <ack> to q
-    16    end if
-    17  end if
+    if p receives a basic message from a neighbor q then
+       if active<p> = false then
+          active<p> <- true
+          parent<p> <- q
+       else 
+          send <ack> to q
+       end if
+    end if
 
-    18  if p receives <ack>
-    19      cc<p> <- cc<p> - 1
-    20      perform procedure LeaveTree<p>
-    21  end if
+    if p receives <ack>
+       cc<p> <- cc<p> - 1
+       perform procedure LeaveTree<p>
+    end if
 
-    22  if p becomes passive
-    23      active<p> <- false
-    24      perform procedure LeaveTree<p>;
-    25  end if
+    if p becomes passive
+       active<p> <- false
+       perform procedure LeaveTree<p>;
+    end if
 
-    26  Procedure LeaveTree<p>
-    27      if active<p> = false and cc<p> = 0 then
-    28          if parent<p> != ┴ then 
-    29              send <ack> to parent<p>
-    30              parent<p> <- ┴
-    31          else
-    32              start a wave, tagged with p
-    33          end if
-    34      end if
+    Procedure LeaveTree<p>
+       if active<p> = false and cc<p> = 0 then
+           if parent<p> != ┴ then 
+                 send <ack> to parent<p>
+                 parent<p> <- ┴
+           else
+             start a wave, tagged with p
+       end if
+    end if
     
-    35  if p receives a wave message then
-    36      if active<p> = false and cc<p> = 0 then
-    37          act according to the wave algorithm
-    38          in the case of a decive event, call Announce
-    39      end if
-    40  end if
+    if p receives a wave message then
+       if active<p> = false and cc<p> = 0 then
+           act according to the wave algorithm
+           in the case of a decive event, call Announce
+       end if
+    end if
 
 
 Echo Algorithm:
@@ -93,30 +93,30 @@ The :ref:`Echo Algorithm <EchoAlgorithm>` [Fokking2013]_ takes part in making su
     :linenos:
     :caption: Echo Algorithm
 
-    1   nat received<p>;
-    2   proc parent<p>;
+    nat received<p>;
+    proc parent<p>;
 
-    3   if p is the initiator then
-    4       send <wave> to each r in Neighbors<p>
-    5   end if
+    if p is the initiator then
+       send <wave> to each r in Neighbors<p>
+    end if
     
-    6   if p receives a <wave> from neighbor q then
-    7       received<p> <- received<p> + 1
-    8       if parent<p> != ┴ and p is a non-initiator then 
-    9           parent<p> <- q
-    10          if |Neighbors<p>| > 1 then
-    11              send <wave> to each r in Neighbors<p>\{q}
-    12          else
-    13              send <wave> to q
-    14          end if
-    15      else if received<p> = |Neighbors<p>| then
-    16          if parent<p> != ┴ then 
-    17              send <wave> to parent<p>
-    18          else
-    19              decide
-    20          end if
-    21      end if
-    22  end if
+    if p receives a <wave> from neighbor q then
+       received<p> <- received<p> + 1
+       if parent<p> != ┴ and p is a non-initiator then 
+           parent<p> <- q
+           if |Neighbors<p>| > 1 then
+              send <wave> to each r in Neighbors<p>\{q}
+           else
+              send <wave> to q
+           end if
+       else if received<p> = |Neighbors<p>| then
+           if parent<p> != ┴ then 
+              send <wave> to parent<p>
+           else
+              decide
+           end if
+       end if
+    end if
 
 
 Example With Terminating Distributed System Algorithm
@@ -167,11 +167,11 @@ Example With Non-Terminating Distributed System Algorithm
 
            Step 1
 
-    * - .. figure:: figures/shavit_ex2_step2.png
+      - .. figure:: figures/shavit_ex2_step2.png
 
            Step 2
 
-    * - .. figure:: figures/shavit_ex2_step3.png
+      - .. figure:: figures/shavit_ex2_step3.png
 
            Step 3
 
