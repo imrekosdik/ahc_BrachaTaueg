@@ -52,7 +52,7 @@ For a ring topology, if there are n number of nodes, then there exists n number 
 
 .. list-table:: 
 
-    * - .. figure:: figures/number_exchanged_messages.png
+    * - .. figure:: figures/exchanged_messages.png
 
            Fig 1. The Relationship Between Node Count and Number Of Exchanged Messages
 
