@@ -40,11 +40,15 @@ We designed two distinct scenarios to evaluate the message complexity of the Bra
 
 The plots below shows the relationship between the node count in the network with the time elapsed until detection and number of exchanged control messages.
 
-.. image:: figures/number_exchanged_messages.png
-  :width: 400
+.. list-table:: 
 
-.. image:: figures/time_elapsed.png
-  :width: 400
+    * - .. figure:: figures/number_exchanged_messages.png
+
+           Fig 1. The Relationship Between Node Count and Number Of Exchanged Messages
+
+      - .. figure:: figures/time_elapsed.png
+
+           Fig 4. The Relationship Between the Node Count and the Elapsed Time
 
 In the second scenario, we considered a complete topology of 10 nodes. In such a topology, there are different cycles with different participating nodes. Before executing the algorithm, we found random cycles with 9, 8, 7, 5, and 3 nodes and made each component send a request to its neighbors in the same direction. After that, we start executing the algorithm through a participating node of the cycles. Table 2 presents the time elapsed until an initiator detects the deadlock of the same cycle in the system.
 
@@ -70,7 +74,6 @@ In the second scenario, we considered a complete topology of 10 nodes. In such a
    * - [0, 3, 6]
      - 6
      - 0.31595897674560547
-
 
 Discussion
 ~~~~~~~~~~
