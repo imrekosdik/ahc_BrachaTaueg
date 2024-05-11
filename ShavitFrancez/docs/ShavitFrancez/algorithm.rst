@@ -132,15 +132,15 @@ Example With Terminating Distributed System Algorithm
 
            Step 2
 
-    * - .. figure:: figures/shavit_step3.png
+      - .. figure:: figures/shavit_step3.png
 
            Step 3
            
-      - .. figure:: figures/shavit_step4.png
+    * - .. figure:: figures/shavit_step4.png
 
            Step 4
 
-    * - .. figure:: figures/shavit_step5.png
+     - .. figure:: figures/shavit_step5.png
 
             Step 5
 
